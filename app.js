@@ -733,4 +733,71 @@ document.getElementById("message-input")?.addEventListener("keypress", (e) => {
 document.getElementById("back-to-chats")?.addEventListener("click", () => {
     document.getElementById("chats-list").classList.remove("hidden");
     document.getElementById("chat-conversation").classList.add("hidden");
-    if (messages
+    if (messagesUnsubscribe) messagesUnsubscribe();
+    currentChatUser = null;
+});
+
+// Toggle Panels
+document.getElementById("chat-toggle")?.addEventListener("click", () => {
+    document.getElementById("chat-panel").classList.toggle("open");
+    document.getElementById("notif-panel").classList.remove("open");
+});
+
+document.getElementById("notif-toggle")?.addEventListener("click", () => {
+    document.getElementById("notif-panel").classList.toggle("open");
+    document.getElementById("chat-panel").classList.remove("open");
+});
+
+document.getElementById("close-chat")?.addEventListener("click", () => {
+    document.getElementById("chat-panel").classList.remove("open");
+});
+
+document.getElementById("close-notif")?.addEventListener("click", () => {
+    document.getElementById("notif-panel").classList.remove("open");
+});
+
+// Profile Menu
+document.querySelector(".profile-menu")?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    document.getElementById("profile-dropdown").classList.toggle("show");
+});
+
+document.addEventListener("click", () => {
+    document.getElementById("profile-dropdown")?.classList.remove("show");
+});
+
+document.getElementById("profile-link")?.addEventListener("click", (e) => {
+    e.preventDefault();
+    document.getElementById("profile-dropdown").classList.remove("show");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+});
+
+document.getElementById("edit-profile-link")?.addEventListener("click", (e) => {
+    e.preventDefault();
+    document.getElementById("profile-dropdown").classList.remove("show");
+    document.getElementById("edit-profile-modal").classList.add("open");
+});
+
+document.querySelectorAll(".close-modal, .modal .close-modal")?.forEach(btn => {
+    btn.addEventListener("click", () => {
+        document.getElementById("edit-profile-modal")?.classList.remove("open");
+    });
+});
+
+// Search Users
+document.getElementById("search-users")?.addEventListener("input", async (e) => {
+    const searchTerm = e.target.value.toLowerCase();
+    if (!searchTerm) return;
+    
+    const q = query(collection(db, "users"));
+    const snapshot = await getDocs(q);
+    
+    snapshot.forEach((doc) => {
+        const user = doc.data();
+        if (user.fullName.toLowerCase().includes(searchTerm) && user.uid !== currentUser?.uid) {
+            console.log("Found:", user.fullName);
+        }
+    });
+});
+
+console.log("✅ DZ Teach App initialized successfully!");

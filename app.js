@@ -1,91 +1,97 @@
-import { initializeApp } from "firebase/app";
-import { getAuth, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "firebase/auth";
-import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "firebase/firestore";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 
-// Firebase config
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+import {
+  getFirestore,
+  addDoc,
+  collection,
+  query,
+  orderBy,
+  onSnapshot
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+// 🔥 ضع config تاعك كما هو
 const firebaseConfig = {
   apiKey: "AIzaSyDg_T6I4mksgG1mgxTnhQI0DA4MhBYGDqU",
   authDomain: "hadra-dz.firebaseapp.com",
-  projectId: "hadra-dz",
-  storageBucket: "hadra-dz.appspot.com",
-  messagingSenderId: "765723444730",
-  appId: "1:765723444730:web:4d816875f8e8a45f939043"
+  projectId: "hadra-dz"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// Elements
-const loginDiv = document.getElementById("login-div");
-const chatDiv = document.getElementById("chat-div");
-const emailInput = document.getElementById("email");
-const passwordInput = document.getElementById("password");
-const loginBtn = document.getElementById("login-btn");
-const googleBtn = document.getElementById("google-btn");
-const logoutBtn = document.getElementById("logout-btn");
-const sendBtn = document.getElementById("send-btn");
-const messageInput = document.getElementById("message-input");
-const messagesDiv = document.getElementById("messages");
+// عناصر
+const loginDiv = document.getElementById("login");
+const appDiv = document.getElementById("app");
+const postsDiv = document.getElementById("posts");
 
-// Login with Email
-loginBtn.addEventListener("click", async () => {
-  try {
-    await signInWithEmailAndPassword(auth, emailInput.value, passwordInput.value);
-  } catch (error) {
-    alert(error.message);
-  }
-});
+// تسجيل
+window.signup = async () => {
+  await createUserWithEmailAndPassword(
+    auth,
+    email.value,
+    password.value
+  );
+};
 
-// Login with Google
-googleBtn.addEventListener("click", async () => {
-  const provider = new GoogleAuthProvider();
-  try {
-    await signInWithPopup(auth, provider);
-  } catch (error) {
-    alert(error.message);
-  }
-});
+// دخول
+window.login = async () => {
+  await signInWithEmailAndPassword(
+    auth,
+    email.value,
+    password.value
+  );
+};
 
-// Logout
-logoutBtn.addEventListener("click", () => signOut(auth));
+// خروج
+window.logout = () => signOut(auth);
 
-// Auth state
+// حالة المستخدم
 onAuthStateChanged(auth, user => {
-  if(user) {
-    loginDiv.classList.add("hidden");
-    chatDiv.classList.remove("hidden");
-    loadMessages();
+  if (user) {
+    loginDiv.style.display = "none";
+    appDiv.style.display = "block";
+    loadPosts();
   } else {
-    loginDiv.classList.remove("hidden");
-    chatDiv.classList.add("hidden");
+    loginDiv.style.display = "block";
+    appDiv.style.display = "none";
   }
 });
 
-// Send message
-sendBtn.addEventListener("click", async () => {
-  if(messageInput.value.trim() === "") return;
-  await addDoc(collection(db, "messages"), {
-    uid: auth.currentUser.uid,
-    name: auth.currentUser.email,
-    text: messageInput.value,
-    timestamp: serverTimestamp()
-  });
-  messageInput.value = "";
-});
+// نشر
+window.addPost = async () => {
+  if (!postInput.value) return;
 
-// Load messages in real-time
-function loadMessages() {
-  const q = query(collection(db, "messages"), orderBy("timestamp", "asc"));
+  await addDoc(collection(db, "posts"), {
+    text: postInput.value
+  });
+
+  postInput.value = "";
+};
+
+// عرض
+function loadPosts() {
+  const q = query(collection(db, "posts"), orderBy("text"));
+
   onSnapshot(q, snapshot => {
-    messagesDiv.innerHTML = "";
+    postsDiv.innerHTML = "";
+
     snapshot.forEach(doc => {
-      const msg = doc.data();
+      const post = doc.data();
+
       const div = document.createElement("div");
-      div.innerHTML = `<span class="user">${msg.name}:</span> ${msg.text}`;
-      messagesDiv.appendChild(div);
-      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+      div.className = "post";
+      div.innerText = post.text;
+
+      postsDiv.appendChild(div);
     });
   });
 }

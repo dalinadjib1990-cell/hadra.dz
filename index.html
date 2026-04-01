@@ -2,32 +2,48 @@
 <html lang="ar">
 <head>
   <meta charset="UTF-8">
-  <title>Hadra Chat</title>
+  <title>DZ Teach</title>
   <link rel="stylesheet" href="style.css">
-  <!-- Firebase -->
-  <script type="module" src="https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js"></script>
-  <script type="module" src="https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js"></script>
-  <script type="module" src="https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js"></script>
 </head>
 <body>
-  <div class="chat-container">
-    <div id="login-div">
-      <h2>تسجيل الدخول</h2>
-      <input type="email" id="email" placeholder="البريد الإلكتروني">
-      <input type="password" id="password" placeholder="كلمة المرور">
-      <button id="login-btn">تسجيل الدخول</button>
-      <button id="google-btn">تسجيل الدخول بواسطة Google</button>
-    </div>
 
-    <div id="chat-div" class="hidden">
-      <h2>الدردشة</h2>
-      <div id="messages"></div>
-      <input type="text" id="message-input" placeholder="اكتب رسالتك...">
-      <button id="send-btn">إرسال</button>
-      <button id="logout-btn">تسجيل الخروج</button>
-    </div>
+<!-- تسجيل -->
+<div id="login-div" class="card">
+  <h2>تسجيل الدخول / إنشاء حساب</h2>
+
+  <input id="name" placeholder="الاسم">
+  <input id="lastname" placeholder="اللقب">
+  <input id="wilaya" placeholder="الولاية">
+  <input id="subject" placeholder="التخصص">
+  <input id="level" placeholder="الطور">
+  <input id="school" placeholder="المؤسسة">
+
+  <input id="email" placeholder="Email">
+  <input id="password" type="password" placeholder="Password">
+
+  <button id="signup-btn">إنشاء حساب</button>
+  <button id="login-btn">تسجيل الدخول</button>
+</div>
+
+<!-- التطبيق -->
+<div id="app" class="hidden">
+
+  <div class="header">
+    <h2>DZ Teach</h2>
+    <button id="logout-btn">خروج</button>
   </div>
 
-  <script type="module" src="app.js"></script>
+  <!-- منشور -->
+  <div class="card">
+    <input id="post-input" placeholder="اكتب منشور...">
+    <button id="post-btn">نشر</button>
+  </div>
+
+  <!-- المنشورات -->
+  <div id="posts"></div>
+
+</div>
+
+<script type="module" src="app.js"></script>
 </body>
 </html>

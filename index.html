@@ -12,7 +12,7 @@
     <!-- شاشة التحميل -->
     <div id="splash-screen">
         <div class="splash-content">
-            <i class="fas fa-chalkboard-user splash-icon"></i>
+            <i class="fas fa-chalkboard-user"></i>
             <h1>DZ Teach</h1>
             <p>منصة الأساتذة الجزائريين</p>
             <div class="spinner"></div>
@@ -21,12 +21,13 @@
 
     <!-- صفحة تسجيل الدخول -->
     <div id="login-page" class="page">
+        <div class="auth-overlay"></div>
         <div class="auth-container">
             <div class="auth-card">
                 <div class="auth-header">
                     <i class="fas fa-chalkboard-user"></i>
-                    <h2>مرحباً بك في DZ Teach</h2>
-                    <p>منصة التواصل الأولى للأساتذة في الجزائر</p>
+                    <h2>DZ Teach</h2>
+                    <p>مرحباً بك في منصة الأساتذة</p>
                 </div>
                 
                 <div class="auth-tabs">
@@ -44,12 +45,8 @@
                         <i class="fas fa-lock"></i>
                         <input type="password" id="login-password" placeholder="كلمة المرور">
                     </div>
-                    <button id="login-btn" class="btn-primary btn-block">
-                        <i class="fas fa-arrow-left"></i> دخول
-                    </button>
-                    <button id="google-btn" class="btn-google btn-block">
-                        <i class="fab fa-google"></i> دخول عبر Google
-                    </button>
+                    <button id="login-btn" class="btn-primary">دخول <i class="fas fa-arrow-left"></i></button>
+                    <button id="google-btn" class="btn-google"><i class="fab fa-google"></i> دخول عبر Google</button>
                 </div>
                 
                 <!-- إنشاء حساب -->
@@ -72,10 +69,6 @@
                             <option value="علوم طبيعية">🔬 علوم طبيعية</option>
                             <option value="فيزياء">⚡ فيزياء</option>
                             <option value="لغة عربية">📖 لغة عربية</option>
-                            <option value="لغة فرنسية">🇫🇷 لغة فرنسية</option>
-                            <option value="لغة إنجليزية">🇬🇧 لغة إنجليزية</option>
-                            <option value="تاريخ وجغرافيا">🗺️ تاريخ وجغرافيا</option>
-                            <option value="فلسفة">💭 فلسفة</option>
                         </select>
                     </div>
                     <div class="row-2">
@@ -95,9 +88,6 @@
                                 <option value="الجزائر">الجزائر</option>
                                 <option value="وهران">وهران</option>
                                 <option value="قسنطينة">قسنطينة</option>
-                                <option value="عنابة">عنابة</option>
-                                <option value="باتنة">باتنة</option>
-                                <option value="بجاية">بجاية</option>
                             </select>
                         </div>
                     </div>
@@ -109,9 +99,7 @@
                         <i class="fas fa-lock"></i>
                         <input type="password" id="reg-password" placeholder="كلمة المرور">
                     </div>
-                    <button id="register-btn" class="btn-primary btn-block">
-                        <i class="fas fa-user-plus"></i> إنشاء حساب
-                    </button>
+                    <button id="register-btn" class="btn-primary">إنشاء حساب <i class="fas fa-user-plus"></i></button>
                 </div>
             </div>
         </div>
@@ -125,12 +113,10 @@
                 <i class="fas fa-chalkboard-user"></i>
                 <span>DZ Teach</span>
             </div>
-            
             <div class="nav-search">
                 <i class="fas fa-search"></i>
                 <input type="text" id="search-input" placeholder="ابحث عن أستاذ...">
             </div>
-            
             <div class="nav-actions">
                 <button class="nav-action" id="chat-toggle">
                     <i class="fas fa-comments"></i>
@@ -141,7 +127,7 @@
                     <span class="badge" id="notif-badge">0</span>
                 </button>
                 <div class="profile-menu">
-                    <img id="nav-avatar" class="nav-avatar" alt="Profile">
+                    <img id="nav-avatar" class="nav-avatar" src="https://via.placeholder.com/40" alt="Profile">
                     <div class="profile-dropdown" id="profile-dropdown">
                         <a href="#" id="profile-link"><i class="fas fa-user"></i> ملفي الشخصي</a>
                         <a href="#" id="edit-profile-link"><i class="fas fa-edit"></i> تعديل الملف</a>
@@ -158,7 +144,7 @@
                 <div class="profile-card">
                     <div class="profile-cover"></div>
                     <div class="profile-avatar-wrapper">
-                        <img id="profile-avatar" class="profile-avatar" alt="Avatar">
+                        <img id="profile-avatar" class="profile-avatar" src="https://via.placeholder.com/100" alt="Avatar">
                         <label for="avatar-upload" class="avatar-edit">
                             <i class="fas fa-camera"></i>
                         </label>
@@ -187,7 +173,7 @@
             <!-- المحتوى الرئيسي -->
             <main class="feed">
                 <div class="create-post-card">
-                    <img id="post-avatar" class="post-avatar" alt="Avatar">
+                    <img id="post-avatar" class="post-avatar" src="https://via.placeholder.com/50" alt="Avatar">
                     <div class="post-input-wrapper">
                         <textarea id="post-text" rows="2" placeholder="ماذا تريد أن تشارك زملائك؟"></textarea>
                         <div class="post-actions">
@@ -199,7 +185,6 @@
                         </div>
                     </div>
                 </div>
-                
                 <div id="posts-feed" class="posts-feed"></div>
             </main>
             
@@ -208,16 +193,6 @@
                 <div class="suggestions-card">
                     <h4>أساتذة مقترحون</h4>
                     <div id="suggestions-list" class="suggestions-list"></div>
-                </div>
-                
-                <div class="trending-card">
-                    <h4>رائج الآن</h4>
-                    <div class="trending-list">
-                        <div class="trending-item">📚 #امتحانات_الفصل</div>
-                        <div class="trending-item">📖 #مناهج_جديدة</div>
-                        <div class="trending-item">🎓 #بكالوريا2024</div>
-                        <div class="trending-item">💡 #طرق_تدريس</div>
-                    </div>
                 </div>
             </aside>
         </div>
@@ -273,7 +248,11 @@
                     </div>
                     <div class="input-field">
                         <i class="fas fa-graduation-cap"></i>
-                        <select id="edit-specialty"></select>
+                        <select id="edit-specialty">
+                            <option value="رياضيات">رياضيات</option>
+                            <option value="علوم طبيعية">علوم طبيعية</option>
+                            <option value="فيزياء">فيزياء</option>
+                        </select>
                     </div>
                     <div class="input-field">
                         <i class="fas fa-chart-line"></i>
@@ -285,7 +264,11 @@
                     </div>
                     <div class="input-field">
                         <i class="fas fa-map-marker-alt"></i>
-                        <select id="edit-wilaya"></select>
+                        <select id="edit-wilaya">
+                            <option value="الجزائر">الجزائر</option>
+                            <option value="وهران">وهران</option>
+                            <option value="قسنطينة">قسنطينة</option>
+                        </select>
                     </div>
                 </div>
                 <div class="modal-footer">

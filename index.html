@@ -4,627 +4,309 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>DZ Teach - منصة الأساتذة الجزائريين</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Cairo', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-        }
-
-        /* Utility Classes */
-        .hidden {
-            display: none !important;
-        }
-
-        /* Container */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        /* Login Page */
-        .login-container {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .login-card {
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
-            width: 100%;
-            max-width: 450px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            animation: fadeInUp 0.5s ease;
-        }
-
-        .logo {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .logo i {
-            font-size: 60px;
-            color: #667eea;
-            margin-bottom: 10px;
-        }
-
-        .logo h1 {
-            font-size: 28px;
-            color: #333;
-        }
-
-        .logo p {
-            color: #666;
-            font-size: 14px;
-        }
-
-        .input-group {
-            position: relative;
-            margin-bottom: 20px;
-        }
-
-        .input-group i {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #999;
-        }
-
-        .input-group input {
-            width: 100%;
-            padding: 12px 45px 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 14px;
-            transition: all 0.3s;
-            font-family: 'Cairo', sans-serif;
-        }
-
-        .input-group input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .btn-primary {
-            width: 100%;
-            padding: 12px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s;
-            margin-bottom: 10px;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-        }
-
-        .btn-google {
-            width: 100%;
-            padding: 12px;
-            background: white;
-            color: #666;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .btn-google:hover {
-            background: #f5f5f5;
-        }
-
-        /* Chat Page */
-        .chat-page {
-            min-height: 100vh;
-            background: #f5f5f5;
-        }
-
-        .navbar {
-            background: white;
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .navbar-brand {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .navbar-brand i {
-            font-size: 28px;
-            color: #667eea;
-        }
-
-        .navbar-brand h2 {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .navbar-actions {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-        }
-
-        .logout-btn {
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            color: #666;
-            transition: color 0.3s;
-        }
-
-        .logout-btn:hover {
-            color: #e74c3c;
-        }
-
-        .chat-container {
-            max-width: 800px;
-            margin: 20px auto;
-            background: white;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-        }
-
-        .chat-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .chat-header h3 {
-            font-size: 18px;
-            font-weight: normal;
-        }
-
-        .messages-area {
-            height: 500px;
-            overflow-y: auto;
-            padding: 20px;
-            background: #fafafa;
-        }
-
-        .message {
-            margin-bottom: 15px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .message.sent {
-            align-items: flex-end;
-        }
-
-        .message.received {
-            align-items: flex-start;
-        }
-
-        .message-bubble {
-            max-width: 70%;
-            padding: 10px 15px;
-            border-radius: 18px;
-            position: relative;
-        }
-
-        .message.sent .message-bubble {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-bottom-right-radius: 4px;
-        }
-
-        .message.received .message-bubble {
-            background: white;
-            color: #333;
-            border-bottom-left-radius: 4px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        .message-name {
-            font-size: 12px;
-            margin-bottom: 5px;
-            color: #999;
-        }
-
-        .message.sent .message-name {
-            text-align: right;
-        }
-
-        .message-time {
-            font-size: 10px;
-            margin-top: 5px;
-            opacity: 0.7;
-        }
-
-        .input-area {
-            padding: 20px;
-            background: white;
-            border-top: 1px solid #e0e0e0;
-            display: flex;
-            gap: 10px;
-        }
-
-        .input-area input {
-            flex: 1;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 25px;
-            font-size: 14px;
-            font-family: 'Cairo', sans-serif;
-        }
-
-        .input-area input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .send-btn {
-            width: 45px;
-            height: 45px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            border-radius: 50%;
-            color: white;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .send-btn:hover {
-            transform: scale(1.05);
-        }
-
-        .online-indicator {
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            background: #4caf50;
-            border-radius: 50%;
-            margin-right: 5px;
-            animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .navbar {
-                padding: 10px 15px;
-            }
-            
-            .chat-container {
-                margin: 10px;
-                border-radius: 15px;
-            }
-            
-            .messages-area {
-                height: 400px;
-            }
-            
-            .message-bubble {
-                max-width: 85%;
-            }
-        }
-    </style>
 </head>
 <body>
+    <!-- شاشة التحميل -->
+    <div id="splash-screen">
+        <div class="splash-content">
+            <div class="splash-icon">
+                <i class="fas fa-chalkboard-user"></i>
+            </div>
+            <h1>DZ Teach</h1>
+            <p>منصة الأساتذة الجزائريين</p>
+            <div class="spinner"></div>
+        </div>
+    </div>
+
     <!-- صفحة تسجيل الدخول -->
-    <div id="login-div">
-        <div class="login-container">
-            <div class="login-card">
-                <div class="logo">
-                    <i class="fas fa-chalkboard-teacher"></i>
-                    <h1>DZ Teach</h1>
-                    <p>منصة الأساتذة الجزائريين</p>
+    <div id="login-page" class="page">
+        <div class="auth-overlay"></div>
+        <div class="auth-container">
+            <div class="auth-card">
+                <div class="auth-header">
+                    <div class="auth-logo">
+                        <i class="fas fa-chalkboard-user"></i>
+                    </div>
+                    <h2>مرحباً بك في DZ Teach</h2>
+                    <p>منصة التواصل الأولى للأساتذة في الجزائر</p>
                 </div>
                 
-                <div class="input-group">
-                    <i class="fas fa-envelope"></i>
-                    <input type="email" id="email" placeholder="البريد الإلكتروني">
-                </div>
-                <div class="input-group">
-                    <i class="fas fa-lock"></i>
-                    <input type="password" id="password" placeholder="كلمة المرور">
+                <div class="auth-tabs">
+                    <button class="auth-tab active" data-tab="login">تسجيل الدخول</button>
+                    <button class="auth-tab" data-tab="register">إنشاء حساب</button>
                 </div>
                 
-                <button id="login-btn" class="btn-primary">
-                    <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
-                </button>
+                <!-- نموذج تسجيل الدخول -->
+                <div id="login-form" class="auth-form active">
+                    <div class="input-field">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="login-email" placeholder="البريد الإلكتروني">
+                    </div>
+                    <div class="input-field">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="login-password" placeholder="كلمة المرور">
+                    </div>
+                    <button id="login-btn" class="btn-primary btn-block">
+                        <i class="fas fa-arrow-left"></i> دخول
+                    </button>
+                    <button id="google-login-btn" class="btn-google btn-block">
+                        <i class="fab fa-google"></i> دخول عبر Google
+                    </button>
+                </div>
                 
-                <button id="google-btn" class="btn-google">
-                    <i class="fab fa-google"></i> تسجيل الدخول عبر Google
-                </button>
-                
-                <p style="text-align: center; margin-top: 20px; color: #666; font-size: 12px;">
-                    منصة خاصة بالأساتذة في الجزائر
-                </p>
+                <!-- نموذج إنشاء حساب -->
+                <div id="register-form" class="auth-form">
+                    <div class="row-2">
+                        <div class="input-field">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="reg-firstname" placeholder="الاسم">
+                        </div>
+                        <div class="input-field">
+                            <i class="fas fa-user-tag"></i>
+                            <input type="text" id="reg-lastname" placeholder="اللقب">
+                        </div>
+                    </div>
+                    <div class="input-field">
+                        <i class="fas fa-graduation-cap"></i>
+                        <select id="reg-specialty">
+                            <option value="">الاختصاص</option>
+                            <option value="رياضيات">📐 رياضيات</option>
+                            <option value="علوم طبيعية">🔬 علوم طبيعية</option>
+                            <option value="فيزياء">⚡ فيزياء</option>
+                            <option value="لغة عربية">📖 لغة عربية</option>
+                            <option value="لغة فرنسية">🇫🇷 لغة فرنسية</option>
+                            <option value="لغة إنجليزية">🇬🇧 لغة إنجليزية</option>
+                        </select>
+                    </div>
+                    <div class="row-2">
+                        <div class="input-field">
+                            <i class="fas fa-chart-line"></i>
+                            <select id="reg-level">
+                                <option value="">الطور</option>
+                                <option value="ابتدائي">📚 ابتدائي</option>
+                                <option value="متوسط">📘 متوسط</option>
+                                <option value="ثانوي">📗 ثانوي</option>
+                            </select>
+                        </div>
+                        <div class="input-field">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <select id="reg-wilaya">
+                                <option value="">الولاية</option>
+                                <option value="الجزائر">الجزائر</option>
+                                <option value="وهران">وهران</option>
+                                <option value="قسنطينة">قسنطينة</option>
+                                <option value="عنابة">عنابة</option>
+                                <option value="باتنة">باتنة</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="input-field">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="reg-email" placeholder="البريد الإلكتروني">
+                    </div>
+                    <div class="input-field">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="reg-password" placeholder="كلمة المرور">
+                    </div>
+                    <button id="register-btn" class="btn-primary btn-block">
+                        <i class="fas fa-user-plus"></i> إنشاء حساب
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- صفحة المحادثات -->
-    <div id="chat-div" class="chat-page hidden">
+    <!-- الصفحة الرئيسية -->
+    <div id="app-page" class="page">
+        <!-- الشريط العلوي -->
         <nav class="navbar">
-            <div class="navbar-brand">
-                <i class="fas fa-chalkboard-teacher"></i>
-                <h2>DZ Teach</h2>
+            <div class="nav-brand">
+                <i class="fas fa-chalkboard-user"></i>
+                <span>DZ Teach</span>
             </div>
-            <div class="navbar-actions">
-                <span id="user-email" style="color: #666; font-size: 14px;"></span>
-                <button id="logout-btn" class="logout-btn" title="تسجيل الخروج">
-                    <i class="fas fa-sign-out-alt"></i>
+            
+            <div class="nav-search">
+                <i class="fas fa-search"></i>
+                <input type="text" id="search-users" placeholder="ابحث عن أستاذ...">
+            </div>
+            
+            <div class="nav-actions">
+                <button class="nav-action" id="chat-toggle">
+                    <i class="fas fa-comments"></i>
+                    <span class="badge" id="chat-badge">0</span>
                 </button>
+                <button class="nav-action" id="notif-toggle">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge" id="notif-badge">0</span>
+                </button>
+                <div class="profile-menu">
+                    <img id="nav-avatar" class="nav-avatar" alt="صورة الملف">
+                    <div class="profile-dropdown" id="profile-dropdown">
+                        <a href="#" id="profile-link"><i class="fas fa-user"></i> ملفي الشخصي</a>
+                        <a href="#" id="edit-profile-link"><i class="fas fa-edit"></i> تعديل الملف</a>
+                        <hr>
+                        <a href="#" id="logout-btn"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a>
+                    </div>
+                </div>
             </div>
         </nav>
         
-        <div class="chat-container">
+        <div class="app-container">
+            <!-- الشريط الجانبي الأيسر -->
+            <aside class="sidebar">
+                <div class="profile-card">
+                    <div class="profile-cover"></div>
+                    <div class="profile-avatar-wrapper">
+                        <img id="profile-avatar" class="profile-avatar" alt="الصورة الشخصية">
+                        <label for="avatar-upload" class="avatar-edit">
+                            <i class="fas fa-camera"></i>
+                        </label>
+                        <input type="file" id="avatar-upload" accept="image/*" style="display: none;">
+                    </div>
+                    <h3 id="profile-name">أستاذ</h3>
+                    <p id="profile-specialty">الاختصاص</p>
+                    <p id="profile-level">الطور</p>
+                    <div class="profile-stats">
+                        <div class="stat">
+                            <span class="stat-value" id="posts-count">0</span>
+                            <span class="stat-label">منشورات</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value" id="friends-count">0</span>
+                            <span class="stat-label">أصدقاء</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="online-section">
+                    <h4><i class="fas fa-circle online-dot"></i> متصلون الآن</h4>
+                    <div id="online-list" class="online-list"></div>
+                </div>
+            </aside>
+            
+            <!-- المحتوى الرئيسي -->
+            <main class="feed">
+                <div class="create-post-card">
+                    <img id="post-avatar" class="post-avatar" alt="الصورة">
+                    <div class="post-input-wrapper">
+                        <textarea id="post-text" rows="2" placeholder="ماذا تريد أن تشارك زملائك؟"></textarea>
+                        <div class="post-actions">
+                            <label for="post-image" class="post-action-btn">
+                                <i class="fas fa-image"></i> صورة
+                            </label>
+                            <input type="file" id="post-image" accept="image/*" style="display: none;">
+                            <button id="submit-post" class="btn-primary-sm">نشر <i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="posts-feed" class="posts-feed"></div>
+            </main>
+            
+            <!-- الشريط الجانبي الأيمن -->
+            <aside class="right-sidebar">
+                <div class="suggestions-card">
+                    <h4><i class="fas fa-user-plus"></i> أساتذة مقترحون</h4>
+                    <div id="suggestions-list" class="suggestions-list"></div>
+                </div>
+                
+                <div class="trending-card">
+                    <h4><i class="fas fa-fire"></i> رائج الآن</h4>
+                    <div class="trending-list">
+                        <div class="trending-item">📚 #امتحانات_الفصل</div>
+                        <div class="trending-item">📖 #مناهج_جديدة</div>
+                        <div class="trending-item">🎓 #بكالوريا2024</div>
+                        <div class="trending-item">💡 #طرق_تدريس</div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+        
+        <!-- نافذة المحادثات -->
+        <div id="chat-panel" class="chat-panel">
             <div class="chat-header">
-                <h3>
-                    <span class="online-indicator"></span>
-                    غرفة المحادثة العامة
-                </h3>
+                <h3><i class="fas fa-comments"></i> المحادثات</h3>
+                <button id="close-chat"><i class="fas fa-times"></i></button>
             </div>
-            
-            <div id="messages" class="messages-area"></div>
-            
-            <div class="input-area">
-                <input type="text" id="message-input" placeholder="اكتب رسالتك هنا...">
-                <button id="send-btn" class="send-btn">
-                    <i class="fas fa-paper-plane"></i>
-                </button>
+            <div id="chats-list" class="chats-list"></div>
+            <div id="chat-conversation" class="chat-conversation hidden">
+                <div class="conv-header">
+                    <button id="back-to-chats"><i class="fas fa-arrow-right"></i></button>
+                    <img id="conv-avatar" class="conv-avatar" alt="">
+                    <div>
+                        <h4 id="conv-name"></h4>
+                        <span id="conv-status" class="conv-status"></span>
+                    </div>
+                </div>
+                <div id="conv-messages" class="conv-messages"></div>
+                <div class="conv-input">
+                    <input type="text" id="message-input" placeholder="اكتب رسالتك...">
+                    <button id="send-message"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- نافذة الإشعارات -->
+        <div id="notif-panel" class="notif-panel">
+            <div class="notif-header">
+                <h3><i class="fas fa-bell"></i> الإشعارات</h3>
+                <button id="close-notif"><i class="fas fa-times"></i></button>
+            </div>
+            <div id="notifications-list" class="notifications-list"></div>
+        </div>
+        
+        <!-- نافذة تعديل الملف -->
+        <div id="edit-profile-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>تعديل الملف الشخصي</h3>
+                    <button class="close-modal"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="modal-body">
+                    <div class="input-field">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="edit-firstname" placeholder="الاسم">
+                    </div>
+                    <div class="input-field">
+                        <i class="fas fa-user-tag"></i>
+                        <input type="text" id="edit-lastname" placeholder="اللقب">
+                    </div>
+                    <div class="input-field">
+                        <i class="fas fa-graduation-cap"></i>
+                        <select id="edit-specialty">
+                            <option value="رياضيات">رياضيات</option>
+                            <option value="علوم طبيعية">علوم طبيعية</option>
+                            <option value="فيزياء">فيزياء</option>
+                            <option value="لغة عربية">لغة عربية</option>
+                        </select>
+                    </div>
+                    <div class="input-field">
+                        <i class="fas fa-chart-line"></i>
+                        <select id="edit-level">
+                            <option value="ابتدائي">ابتدائي</option>
+                            <option value="متوسط">متوسط</option>
+                            <option value="ثانوي">ثانوي</option>
+                        </select>
+                    </div>
+                    <div class="input-field">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <select id="edit-wilaya">
+                            <option value="الجزائر">الجزائر</option>
+                            <option value="وهران">وهران</option>
+                            <option value="قسنطينة">قسنطينة</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="save-profile" class="btn-primary">حفظ التغييرات</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <script type="importmap">
-        {
-            "imports": {
-                "firebase/app": "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js",
-                "firebase/auth": "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js",
-                "firebase/firestore": "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js"
-            }
-        }
-    </script>
-
-    <script type="module">
-        import { initializeApp } from "firebase/app";
-        import { getAuth, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "firebase/auth";
-        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "firebase/firestore";
-
-        // Firebase config
-        const firebaseConfig = {
-            apiKey: "AIzaSyDg_T6I4mksgG1mgxTnhQI0DA4MhBYGDqU",
-            authDomain: "hadra-dz.firebaseapp.com",
-            projectId: "hadra-dz",
-            storageBucket: "hadra-dz.appspot.com",
-            messagingSenderId: "765723444730",
-            appId: "1:765723444730:web:4d816875f8e8a45f939043"
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        // Elements
-        const loginDiv = document.getElementById("login-div");
-        const chatDiv = document.getElementById("chat-div");
-        const emailInput = document.getElementById("email");
-        const passwordInput = document.getElementById("password");
-        const loginBtn = document.getElementById("login-btn");
-        const googleBtn = document.getElementById("google-btn");
-        const logoutBtn = document.getElementById("logout-btn");
-        const sendBtn = document.getElementById("send-btn");
-        const messageInput = document.getElementById("message-input");
-        const messagesDiv = document.getElementById("messages");
-        const userEmailSpan = document.getElementById("user-email");
-
-        // Format time
-        function formatTime(timestamp) {
-            if (!timestamp) return "";
-            const date = timestamp.toDate();
-            return date.toLocaleTimeString('ar-DZ', { hour: '2-digit', minute: '2-digit' });
-        }
-
-        // Create message element
-        function createMessageElement(msg, isCurrentUser) {
-            const messageDiv = document.createElement("div");
-            messageDiv.className = `message ${isCurrentUser ? 'sent' : 'received'}`;
-            
-            const time = msg.timestamp ? formatTime(msg.timestamp) : "";
-            const name = isCurrentUser ? "أنت" : msg.name?.split('@')[0] || "مستخدم";
-            
-            messageDiv.innerHTML = `
-                <div class="message-name">${name}</div>
-                <div class="message-bubble">
-                    ${escapeHtml(msg.text)}
-                    <div class="message-time">${time}</div>
-                </div>
-            `;
-            
-            return messageDiv;
-        }
-
-        // Escape HTML to prevent XSS
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        // Load messages in real-time
-        function loadMessages() {
-            const q = query(collection(db, "messages"), orderBy("timestamp", "asc"));
-            
-            onSnapshot(q, (snapshot) => {
-                messagesDiv.innerHTML = "";
-                
-                snapshot.forEach((doc) => {
-                    const msg = doc.data();
-                    const isCurrentUser = msg.uid === auth.currentUser?.uid;
-                    const messageElement = createMessageElement(msg, isCurrentUser);
-                    messagesDiv.appendChild(messageElement);
-                });
-                
-                // Scroll to bottom
-                messagesDiv.scrollTop = messagesDiv.scrollHeight;
-            }, (error) => {
-                console.error("Error loading messages:", error);
-                messagesDiv.innerHTML = '<div style="text-align:center;color:#999;">خطأ في تحميل الرسائل</div>';
-            });
-        }
-
-        // Login with Email
-        loginBtn.addEventListener("click", async () => {
-            const email = emailInput.value.trim();
-            const password = passwordInput.value.trim();
-            
-            if (!email || !password) {
-                alert("الرجاء إدخال البريد الإلكتروني وكلمة المرور");
-                return;
-            }
-            
-            try {
-                await signInWithEmailAndPassword(auth, email, password);
-                emailInput.value = "";
-                passwordInput.value = "";
-            } catch (error) {
-                let errorMessage = "حدث خطأ في تسجيل الدخول";
-                switch (error.code) {
-                    case 'auth/user-not-found':
-                        errorMessage = "المستخدم غير موجود";
-                        break;
-                    case 'auth/wrong-password':
-                        errorMessage = "كلمة المرور غير صحيحة";
-                        break;
-                    case 'auth/invalid-email':
-                        errorMessage = "البريد الإلكتروني غير صالح";
-                        break;
-                    case 'auth/too-many-requests':
-                        errorMessage = "تم تعطيل الحساب مؤقتاً بسبب محاولات كثيرة";
-                        break;
-                    default:
-                        errorMessage = error.message;
-                }
-                alert(errorMessage);
-            }
-        });
-
-        // Login with Google
-        googleBtn.addEventListener("click", async () => {
-            const provider = new GoogleAuthProvider();
-            try {
-                await signInWithPopup(auth, provider);
-            } catch (error) {
-                let errorMessage = "حدث خطأ في تسجيل الدخول عبر Google";
-                if (error.code === 'auth/popup-blocked') {
-                    errorMessage = "الرجاء السماح للنوافذ المنبثقة في المتصفح";
-                } else if (error.code === 'auth/network-request-failed') {
-                    errorMessage = "خطأ في الشبكة، تحقق من اتصال الإنترنت";
-                }
-                alert(errorMessage);
-            }
-        });
-
-        // Logout
-        logoutBtn.addEventListener("click", async () => {
-            try {
-                await signOut(auth);
-            } catch (error) {
-                alert("حدث خطأ أثناء تسجيل الخروج");
-            }
-        });
-
-        // Send message
-        sendBtn.addEventListener("click", async () => {
-            const text = messageInput.value.trim();
-            if (!text) return;
-            
-            if (!auth.currentUser) {
-                alert("الرجاء تسجيل الدخول أولاً");
-                return;
-            }
-            
-            try {
-                await addDoc(collection(db, "messages"), {
-                    uid: auth.currentUser.uid,
-                    name: auth.currentUser.email,
-                    text: text,
-                    timestamp: serverTimestamp()
-                });
-                messageInput.value = "";
-            } catch (error) {
-                console.error("Error sending message:", error);
-                alert("حدث خطأ في إرسال الرسالة");
-            }
-        });
-
-        // Send message on Enter key
-        messageInput.addEventListener("keypress", (e) => {
-            if (e.key === "Enter") {
-                sendBtn.click();
-            }
-        });
-
-        // Auth state
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                loginDiv.classList.add("hidden");
-                chatDiv.classList.remove("hidden");
-                userEmailSpan.textContent = user.email;
-                loadMessages();
-            } else {
-                loginDiv.classList.remove("hidden");
-                chatDiv.classList.add("hidden");
-                messagesDiv.innerHTML = "";
-            }
-        });
-
-        console.log("✅ DZ Teach app initialized successfully!");
-    </script>
+    <script type="module" src="app.js"></script>
 </body>
 </html>

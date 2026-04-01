@@ -1,53 +1,56 @@
 body {
-  font-family: Arial, sans-serif;
+  font-family: Arial;
   background: #f0f2f5;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
   margin: 0;
 }
 
-.chat-container {
-  width: 400px;
-  background: #fff;
+.card {
+  background: white;
+  padding: 15px;
+  margin: 15px;
   border-radius: 10px;
-  box-shadow: 0 0 20px rgba(0,0,0,0.1);
-  padding: 20px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
-.hidden { display: none; }
-
-#messages {
-  height: 300px;
-  overflow-y: auto;
-  border: 1px solid #ddd;
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 5px;
-}
-
-#messages div {
-  margin-bottom: 10px;
-}
-
-#messages .user { font-weight: bold; }
-
-input, button {
+input {
   width: 100%;
   padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 5px;
+  margin: 5px 0;
+  border-radius: 8px;
   border: 1px solid #ccc;
 }
 
 button {
-  cursor: pointer;
-  background: #007bff;
-  color: white;
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
   border: none;
+  border-radius: 8px;
+  background: #1877f2;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
 }
 
 button:hover {
-  background: #0056b3;
+  background: #145dbf;
+}
+
+.hidden {
+  display: none;
+}
+
+.header {
+  background: #1877f2;
+  color: white;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.post {
+  background: white;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 10px;
 }

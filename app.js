@@ -24,13 +24,15 @@ import {
     arrayUnion,
     arrayRemove,
     where,
-    getDocs
+    getDocs,
+    deleteDoc
 } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 import { 
     getStorage, 
     ref, 
     uploadBytes, 
-    getDownloadURL 
+    getDownloadURL,
+    deleteObject
 } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-storage.js";
 
 // Firebase Config
@@ -52,48 +54,34 @@ const googleProvider = new GoogleAuthProvider();
 
 // Global Variables
 let currentUser = null;
-let onlineUsers = new Set();
-let messagesListener = null;
-let postsListener = null;
-let notificationsListener = null;
+let currentChatUser = null;
+let messagesUnsubscribe = null;
+let postsUnsubscribe = null;
+let notificationsUnsubscribe = null;
 
 // DOM Elements
+const splashScreen = document.getElementById("splash-screen");
 const loginPage = document.getElementById("login-page");
 const appPage = document.getElementById("app-page");
-const loginSubmit = document.getElementById("login-submit");
-const googleLogin = document.getElementById("google-login");
-const registerSubmit = document.getElementById("register-submit");
-const logoutBtn = document.getElementById("logout-btn");
-const profileDropdown = document.querySelector(".profile-menu");
-const dropdownMenu = document.getElementById("dropdown-menu");
-const postInput = document.getElementById("post-input");
-const submitPostBtn = document.getElementById("submit-post-btn");
-const imageUploadBtn = document.getElementById("image-upload-btn");
-const imageFile = document.getElementById("image-file");
-const postsContainer = document.getElementById("posts-container");
-const searchUsers = document.getElementById("search-users");
-const messagesBtn = document.getElementById("messages-btn");
-const notificationsBtn = document.getElementById("notifications-btn");
-const chatWindow = document.getElementById("chat-window");
-const notificationsWindow = document.getElementById("notifications-window");
-const closeChat = document.getElementById("close-chat");
-const closeNotifications = document.getElementById("close-notifications");
-const onlineUsersList = document.getElementById("online-users-list");
-const suggestionsList = document.getElementById("suggestions-list");
 
-// Tab Switching
-document.querySelectorAll(".tab-btn").forEach(btn => {
+// Hide splash after 1.5 seconds
+setTimeout(() => {
+    if (splashScreen) splashScreen.style.display = "none";
+}, 1500);
+
+// Auth Tabs
+document.querySelectorAll(".auth-tab").forEach(btn => {
     btn.addEventListener("click", () => {
         const tab = btn.dataset.tab;
-        document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+        document.querySelectorAll(".auth-tab").forEach(b => b.classList.remove("active"));
         btn.classList.add("active");
-        document.querySelectorAll(".form-container").forEach(form => form.classList.remove("active"));
+        document.querySelectorAll(".auth-form").forEach(form => form.classList.remove("active"));
         document.getElementById(`${tab}-form`).classList.add("active");
     });
 });
 
-// Register User
-registerSubmit.addEventListener("click", async () => {
+// Register
+document.getElementById("register-btn")?.addEventListener("click", async () => {
     const firstName = document.getElementById("reg-firstname").value;
     const lastName = document.getElementById("reg-lastname").value;
     const specialty = document.getElementById("reg-specialty").value;
@@ -111,46 +99,46 @@ registerSubmit.addEventListener("click", async () => {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
         
-        await updateProfile(user, {
-            displayName: `${firstName} ${lastName}`
-        });
+        await updateProfile(user, { displayName: `${firstName} ${lastName}` });
+        
+        const avatarUrl = `https://ui-avatars.com/api/?background=4361ee&color=fff&size=200&name=${firstName}+${lastName}`;
         
         await setDoc(doc(db, "users", user.uid), {
             uid: user.uid,
-            firstName: firstName,
-            lastName: lastName,
+            firstName, lastName,
             fullName: `${firstName} ${lastName}`,
-            specialty: specialty,
-            level: level,
-            wilaya: wilaya,
-            email: email,
-            avatar: "https://via.placeholder.com/100",
+            specialty, level, wilaya,
+            email,
+            avatar: avatarUrl,
             createdAt: serverTimestamp(),
             friends: [],
             online: true,
-            lastSeen: serverTimestamp()
+            lastSeen: serverTimestamp(),
+            postsCount: 0
         });
         
-        alert("تم إنشاء الحساب بنجاح!");
+        alert("✅ تم إنشاء الحساب بنجاح!");
+        document.querySelector(".auth-tab[data-tab='login']").click();
+        
     } catch (error) {
-        alert(error.message);
+        alert("❌ " + error.message);
     }
 });
 
 // Login
-loginSubmit.addEventListener("click", async () => {
+document.getElementById("login-btn")?.addEventListener("click", async () => {
     const email = document.getElementById("login-email").value;
     const password = document.getElementById("login-password").value;
     
     try {
         await signInWithEmailAndPassword(auth, email, password);
     } catch (error) {
-        alert(error.message);
+        alert("❌ " + error.message);
     }
 });
 
 // Google Login
-googleLogin.addEventListener("click", async () => {
+document.getElementById("google-btn")?.addEventListener("click", async () => {
     try {
         const result = await signInWithPopup(auth, googleProvider);
         const user = result.user;
@@ -166,35 +154,30 @@ googleLogin.addEventListener("click", async () => {
                 level: "غير محدد",
                 wilaya: "غير محدد",
                 email: user.email,
-                avatar: user.photoURL || "https://via.placeholder.com/100",
+                avatar: user.photoURL || `https://ui-avatars.com/api/?background=4361ee&color=fff&size=200&name=${user.displayName || user.email}`,
                 createdAt: serverTimestamp(),
                 friends: [],
                 online: true,
-                lastSeen: serverTimestamp()
+                lastSeen: serverTimestamp(),
+                postsCount: 0
             });
         } else {
-            await updateDoc(doc(db, "users", user.uid), {
-                online: true,
-                lastSeen: serverTimestamp()
-            });
+            await updateDoc(doc(db, "users", user.uid), { online: true, lastSeen: serverTimestamp() });
         }
     } catch (error) {
-        alert(error.message);
+        alert("❌ " + error.message);
     }
 });
 
 // Logout
-logoutBtn.addEventListener("click", async () => {
+document.getElementById("logout-action")?.addEventListener("click", async () => {
     if (currentUser) {
-        await updateDoc(doc(db, "users", currentUser.uid), {
-            online: false,
-            lastSeen: serverTimestamp()
-        });
+        await updateDoc(doc(db, "users", currentUser.uid), { online: false, lastSeen: serverTimestamp() });
     }
     await signOut(auth);
 });
 
-// Auth State Listener
+// Auth State
 onAuthStateChanged(auth, async (user) => {
     if (user) {
         currentUser = user;
@@ -204,124 +187,187 @@ onAuthStateChanged(auth, async (user) => {
         const userDoc = await getDoc(doc(db, "users", user.uid));
         if (userDoc.exists()) {
             const userData = userDoc.data();
-            updateUIWithUserData(userData);
+            updateUI(userData);
         }
         
-        updateUserOnlineStatus(true);
+        await updateDoc(doc(db, "users", user.uid), { online: true, lastSeen: serverTimestamp() });
+        
         loadPosts();
         loadOnlineUsers();
         loadSuggestions();
         loadNotifications();
-        setupRealtimeListeners();
+        loadChats();
+        
     } else {
         currentUser = null;
         loginPage.classList.add("active");
         appPage.classList.remove("active");
         
-        if (messagesListener) messagesListener();
-        if (postsListener) postsListener();
-        if (notificationsListener) notificationsListener();
+        if (postsUnsubscribe) postsUnsubscribe();
+        if (notificationsUnsubscribe) notificationsUnsubscribe();
     }
 });
 
-// Update UI with User Data
-function updateUIWithUserData(userData) {
-    document.getElementById("sidebar-name").textContent = userData.fullName;
-    document.getElementById("sidebar-specialty").textContent = userData.specialty;
-    document.getElementById("sidebar-level").textContent = userData.level;
-    document.getElementById("sidebar-wilaya").textContent = userData.wilaya;
+// Update UI
+function updateUI(userData) {
+    document.getElementById("profile-name").textContent = userData.fullName;
+    document.getElementById("profile-specialty").textContent = userData.specialty;
+    document.getElementById("profile-name-side").textContent = userData.fullName;
+    document.getElementById("friends-count").textContent = userData.friends?.length || 0;
     
     const avatarUrl = userData.avatar;
+    document.getElementById("nav-avatar").src = avatarUrl;
     document.getElementById("profile-avatar").src = avatarUrl;
-    document.getElementById("sidebar-avatar").src = avatarUrl;
     document.getElementById("post-avatar").src = avatarUrl;
+    
+    // Fill edit form
+    document.getElementById("edit-firstname").value = userData.firstName;
+    document.getElementById("edit-lastname").value = userData.lastName;
+    document.getElementById("edit-specialty").innerHTML = `
+        <option value="رياضيات" ${userData.specialty === "رياضيات" ? "selected" : ""}>رياضيات</option>
+        <option value="علوم طبيعية" ${userData.specialty === "علوم طبيعية" ? "selected" : ""}>علوم طبيعية</option>
+        <option value="فيزياء" ${userData.specialty === "فيزياء" ? "selected" : ""}>فيزياء</option>
+        <option value="لغة عربية" ${userData.specialty === "لغة عربية" ? "selected" : ""}>لغة عربية</option>
+        <option value="لغة فرنسية" ${userData.specialty === "لغة فرنسية" ? "selected" : ""}>لغة فرنسية</option>
+        <option value="لغة إنجليزية" ${userData.specialty === "لغة إنجليزية" ? "selected" : ""}>لغة إنجليزية</option>
+        <option value="تاريخ وجغرافيا" ${userData.specialty === "تاريخ وجغرافيا" ? "selected" : ""}>تاريخ وجغرافيا</option>
+        <option value="فلسفة" ${userData.specialty === "فلسفة" ? "selected" : ""}>فلسفة</option>
+    `;
+    document.getElementById("edit-level").value = userData.level;
+    document.getElementById("edit-wilaya").innerHTML = `
+        <option value="الجزائر" ${userData.wilaya === "الجزائر" ? "selected" : ""}>الجزائر</option>
+        <option value="وهران" ${userData.wilaya === "وهران" ? "selected" : ""}>وهران</option>
+        <option value="قسنطينة" ${userData.wilaya === "قسنطينة" ? "selected" : ""}>قسنطينة</option>
+        <option value="عنابة" ${userData.wilaya === "عنابة" ? "selected" : ""}>عنابة</option>
+        <option value="باتنة" ${userData.wilaya === "باتنة" ? "selected" : ""}>باتنة</option>
+        <option value="بجاية" ${userData.wilaya === "بجاية" ? "selected" : ""}>بجاية</option>
+    `;
 }
 
-// Update User Online Status
-async function updateUserOnlineStatus(isOnline) {
-    if (currentUser) {
-        await updateDoc(doc(db, "users", currentUser.uid), {
-            online: isOnline,
-            lastSeen: serverTimestamp()
-        });
+// Avatar Upload
+document.getElementById("avatar-upload")?.addEventListener("change", async (e) => {
+    const file = e.target.files[0];
+    if (!file || !currentUser) return;
+    
+    try {
+        const storageRef = ref(storage, `avatars/${currentUser.uid}`);
+        await uploadBytes(storageRef, file);
+        const avatarUrl = await getDownloadURL(storageRef);
+        
+        await updateDoc(doc(db, "users", currentUser.uid), { avatar: avatarUrl });
+        await updateProfile(auth.currentUser, { photoURL: avatarUrl });
+        
+        alert("✅ تم تحديث الصورة بنجاح!");
+    } catch (error) {
+        alert("❌ فشل رفع الصورة");
     }
-}
+});
+
+// Save Profile
+document.getElementById("save-profile")?.addEventListener("click", async () => {
+    if (!currentUser) return;
+    
+    const firstName = document.getElementById("edit-firstname").value;
+    const lastName = document.getElementById("edit-lastname").value;
+    const specialty = document.getElementById("edit-specialty").value;
+    const level = document.getElementById("edit-level").value;
+    const wilaya = document.getElementById("edit-wilaya").value;
+    
+    try {
+        await updateDoc(doc(db, "users", currentUser.uid), {
+            firstName, lastName,
+            fullName: `${firstName} ${lastName}`,
+            specialty, level, wilaya
+        });
+        
+        await updateProfile(auth.currentUser, { displayName: `${firstName} ${lastName}` });
+        
+        alert("✅ تم تحديث الملف الشخصي!");
+        document.getElementById("edit-profile-modal").classList.remove("open");
+    } catch (error) {
+        alert("❌ " + error.message);
+    }
+});
 
 // Load Posts
 async function loadPosts() {
     const q = query(collection(db, "posts"), orderBy("timestamp", "desc"));
     
-    postsListener = onSnapshot(q, (snapshot) => {
-        postsContainer.innerHTML = "";
-        snapshot.forEach(async (doc) => {
+    postsUnsubscribe = onSnapshot(q, async (snapshot) => {
+        const postsFeed = document.getElementById("posts-feed");
+        postsFeed.innerHTML = "";
+        
+        for (const doc of snapshot.docs) {
             const post = doc.data();
-            const postId = doc.id;
             const userDoc = await getDoc(doc(db, "users", post.userId));
             const userData = userDoc.exists() ? userDoc.data() : null;
             
-            const postElement = createPostElement(postId, post, userData);
-            postsContainer.appendChild(postElement);
-        });
+            const postElement = createPostElement(doc.id, post, userData);
+            postsFeed.appendChild(postElement);
+        }
+        
+        document.getElementById("posts-count").textContent = snapshot.size;
     });
 }
 
-// Create Post Element
 function createPostElement(postId, post, userData) {
     const div = document.createElement("div");
     div.className = "post-card";
     
-    const isLiked = post.likes && post.likes.includes(currentUser?.uid);
+    const isLiked = post.likes?.includes(currentUser?.uid);
+    const timeAgo = post.timestamp ? getTimeAgo(post.timestamp.toDate()) : "الآن";
     
     div.innerHTML = `
         <div class="post-header">
             <div class="post-user">
-                <img src="${userData?.avatar || 'https://via.placeholder.com/50'}" alt="Avatar">
+                <img src="${userData?.avatar || 'https://via.placeholder.com/50'}" alt="">
                 <div class="post-user-info">
                     <h4>${userData?.fullName || 'مستخدم'}</h4>
-                    <p>${userData?.specialty || ''} • ${new Date(post.timestamp?.toDate()).toLocaleString('ar-DZ')}</p>
+                    <p>${userData?.specialty || ''} • ${timeAgo}</p>
                 </div>
             </div>
         </div>
         <div class="post-content">
-            <p>${post.text}</p>
-            ${post.imageUrl ? `<img src="${post.imageUrl}" class="post-image" alt="Post image">` : ''}
+            <p>${post.text || ''}</p>
+            ${post.imageUrl ? `<img src="${post.imageUrl}" class="post-image" alt="">` : ''}
         </div>
         <div class="post-stats">
-            <button class="like-btn ${isLiked ? 'liked' : ''}" data-postid="${postId}">
+            <button class="like-btn ${isLiked ? 'liked' : ''}" data-id="${postId}">
                 <i class="fas fa-heart"></i> ${post.likes?.length || 0}
             </button>
-            <button class="comment-toggle-btn" data-postid="${postId}">
+            <button class="comment-btn" data-id="${postId}">
                 <i class="fas fa-comment"></i> ${post.comments?.length || 0}
             </button>
         </div>
         <div class="comments-section" id="comments-${postId}" style="display: none;">
             <div class="comment-input">
                 <input type="text" id="comment-input-${postId}" placeholder="اكتب تعليقاً...">
-                <button class="comment-submit" data-postid="${postId}">نشر</button>
+                <button class="comment-submit" data-id="${postId}">نشر</button>
             </div>
             <div id="comments-list-${postId}"></div>
         </div>
     `;
     
-    const likeBtn = div.querySelector(".like-btn");
-    likeBtn.addEventListener("click", () => toggleLike(postId));
+    div.querySelector(".like-btn")?.addEventListener("click", () => toggleLike(postId));
+    div.querySelector(".comment-btn")?.addEventListener("click", () => toggleComments(postId));
+    div.querySelector(".comment-submit")?.addEventListener("click", () => addComment(postId));
     
-    const commentToggle = div.querySelector(".comment-toggle-btn");
-    commentToggle.addEventListener("click", () => {
-        const commentsSection = div.querySelector(`.comments-section`);
-        commentsSection.style.display = commentsSection.style.display === "none" ? "block" : "none";
-        if (commentsSection.style.display === "block") {
-            loadComments(postId);
+    if (post.comments) {
+        const commentsList = div.querySelector(`#comments-list-${postId}`);
+        if (commentsList) {
+            commentsList.innerHTML = "";
+            post.comments.forEach(comment => {
+                const commentDiv = document.createElement("div");
+                commentDiv.className = "comment";
+                commentDiv.innerHTML = `<strong>${comment.userName}</strong>: ${comment.text}`;
+                commentsList.appendChild(commentDiv);
+            });
         }
-    });
-    
-    const commentSubmit = div.querySelector(".comment-submit");
-    commentSubmit.addEventListener("click", () => addComment(postId));
+    }
     
     return div;
 }
 
-// Toggle Like
 async function toggleLike(postId) {
     if (!currentUser) return;
     
@@ -329,16 +375,11 @@ async function toggleLike(postId) {
     const postDoc = await getDoc(postRef);
     const postData = postDoc.data();
     
-    if (postData.likes && postData.likes.includes(currentUser.uid)) {
-        await updateDoc(postRef, {
-            likes: arrayRemove(currentUser.uid)
-        });
+    if (postData.likes?.includes(currentUser.uid)) {
+        await updateDoc(postRef, { likes: arrayRemove(currentUser.uid) });
     } else {
-        await updateDoc(postRef, {
-            likes: arrayUnion(currentUser.uid)
-        });
+        await updateDoc(postRef, { likes: arrayUnion(currentUser.uid) });
         
-        // Create notification
         if (postData.userId !== currentUser.uid) {
             await addDoc(collection(db, "notifications"), {
                 userId: postData.userId,
@@ -352,12 +393,17 @@ async function toggleLike(postId) {
     }
 }
 
-// Add Comment
+function toggleComments(postId) {
+    const commentsSection = document.getElementById(`comments-${postId}`);
+    if (commentsSection) {
+        commentsSection.style.display = commentsSection.style.display === "none" ? "block" : "none";
+    }
+}
+
 async function addComment(postId) {
-    const commentInput = document.getElementById(`comment-input-${postId}`);
-    const commentText = commentInput.value.trim();
-    
-    if (!commentText || !currentUser) return;
+    const input = document.getElementById(`comment-input-${postId}`);
+    const text = input?.value.trim();
+    if (!text || !currentUser) return;
     
     const postRef = doc(db, "posts", postId);
     const postDoc = await getDoc(postRef);
@@ -366,7 +412,7 @@ async function addComment(postId) {
     const comment = {
         userId: currentUser.uid,
         userName: currentUser.displayName,
-        text: commentText,
+        text: text,
         timestamp: new Date()
     };
     
@@ -374,9 +420,8 @@ async function addComment(postId) {
         comments: arrayUnion(comment)
     });
     
-    commentInput.value = "";
+    input.value = "";
     
-    // Create notification
     if (postData.userId !== currentUser.uid) {
         await addDoc(collection(db, "notifications"), {
             userId: postData.userId,
@@ -387,70 +432,41 @@ async function addComment(postId) {
             timestamp: serverTimestamp()
         });
     }
-    
-    loadComments(postId);
-}
-
-// Load Comments
-async function loadComments(postId) {
-    const postRef = doc(db, "posts", postId);
-    const postDoc = await getDoc(postRef);
-    const postData = postDoc.data();
-    const commentsList = document.getElementById(`comments-list-${postId}`);
-    
-    if (commentsList && postData.comments) {
-        commentsList.innerHTML = "";
-        postData.comments.forEach(comment => {
-            const commentDiv = document.createElement("div");
-            commentDiv.className = "comment";
-            commentDiv.innerHTML = `<strong>${comment.userName}</strong>: ${comment.text}`;
-            commentsList.appendChild(commentDiv);
-        });
-    }
 }
 
 // Create Post
-submitPostBtn.addEventListener("click", async () => {
-    const text = postInput.value.trim();
-    if (!text && !currentImageUrl) return;
+document.getElementById("submit-post")?.addEventListener("click", async () => {
+    const text = document.getElementById("post-text").value.trim();
+    if (!text) {
+        alert("الرجاء كتابة محتوى المنشور");
+        return;
+    }
     
     try {
-        const postData = {
+        let imageUrl = null;
+        const imageFile = document.getElementById("post-image").files[0];
+        
+        if (imageFile) {
+            const storageRef = ref(storage, `posts/${Date.now()}_${imageFile.name}`);
+            await uploadBytes(storageRef, imageFile);
+            imageUrl = await getDownloadURL(storageRef);
+        }
+        
+        await addDoc(collection(db, "posts"), {
             userId: currentUser.uid,
             text: text,
+            imageUrl: imageUrl,
             timestamp: serverTimestamp(),
             likes: [],
             comments: []
-        };
+        });
         
-        if (currentImageUrl) {
-            postData.imageUrl = currentImageUrl;
-        }
+        document.getElementById("post-text").value = "";
+        document.getElementById("post-image").value = "";
+        alert("✅ تم نشر المنشور!");
         
-        await addDoc(collection(db, "posts"), postData);
-        postInput.value = "";
-        currentImageUrl = null;
-        
-        alert("تم نشر المنشور بنجاح!");
     } catch (error) {
-        console.error("Error creating post:", error);
-        alert("حدث خطأ أثناء نشر المنشور");
-    }
-});
-
-let currentImageUrl = null;
-
-imageUploadBtn.addEventListener("click", () => {
-    imageFile.click();
-});
-
-imageFile.addEventListener("change", async (e) => {
-    const file = e.target.files[0];
-    if (file) {
-        const storageRef = ref(storage, `posts/${Date.now()}_${file.name}`);
-        await uploadBytes(storageRef, file);
-        currentImageUrl = await getDownloadURL(storageRef);
-        alert("تم رفع الصورة بنجاح!");
+        alert("❌ " + error.message);
     }
 });
 
@@ -459,21 +475,23 @@ async function loadOnlineUsers() {
     const q = query(collection(db, "users"), where("online", "==", true));
     
     onSnapshot(q, (snapshot) => {
-        onlineUsersList.innerHTML = "";
+        const onlineList = document.getElementById("online-list");
+        onlineList.innerHTML = "";
+        
         snapshot.forEach((doc) => {
             const user = doc.data();
             if (user.uid !== currentUser?.uid) {
-                const userDiv = document.createElement("div");
-                userDiv.className = "online-user";
-                userDiv.onclick = () => startChat(user.uid, user.fullName, user.avatar);
-                userDiv.innerHTML = `
-                    <img src="${user.avatar}" alt="Avatar">
-                    <div class="online-user-info">
+                const item = document.createElement("div");
+                item.className = "online-item";
+                item.onclick = () => startChat(user);
+                item.innerHTML = `
+                    <img src="${user.avatar}" class="online-avatar" alt="">
+                    <div class="online-info">
                         <h5>${user.fullName}</h5>
                         <p>${user.specialty}</p>
                     </div>
                 `;
-                onlineUsersList.appendChild(userDiv);
+                onlineList.appendChild(item);
             }
         });
     });
@@ -484,209 +502,264 @@ async function loadSuggestions() {
     const q = query(collection(db, "users"));
     const snapshot = await getDocs(q);
     
+    const suggestionsList = document.getElementById("suggestions-list");
     suggestionsList.innerHTML = "";
+    
     snapshot.forEach((doc) => {
         const user = doc.data();
         if (user.uid !== currentUser?.uid) {
-            const suggestionDiv = document.createElement("div");
-            suggestionDiv.className = "suggestion-item";
-            suggestionDiv.innerHTML = `
-                <div>
-                    <strong>${user.fullName}</strong>
-                    <p style="font-size: 12px; color: #666;">${user.specialty}</p>
+            const item = document.createElement("div");
+            item.className = "suggestion-item";
+            item.innerHTML = `
+                <div class="suggestion-info">
+                    <h5>${user.fullName}</h5>
+                    <p>${user.specialty}</p>
                 </div>
-                <button class="add-friend-btn" data-uid="${user.uid}">إضافة</button>
+                <button class="add-friend" data-id="${user.uid}">➕ إضافة</button>
             `;
-            suggestionsList.appendChild(suggestionDiv);
+            suggestionsList.appendChild(item);
         }
     });
     
-    document.querySelectorAll(".add-friend-btn").forEach(btn => {
+    document.querySelectorAll(".add-friend").forEach(btn => {
         btn.addEventListener("click", async (e) => {
-            const friendId = btn.dataset.uid;
-            await addFriend(friendId);
+            e.stopPropagation();
+            const friendId = btn.dataset.id;
+            await updateDoc(doc(db, "users", currentUser.uid), {
+                friends: arrayUnion(friendId)
+            });
+            alert("✅ تم إضافة الصديق!");
         });
     });
-}
-
-// Add Friend
-async function addFriend(friendId) {
-    if (!currentUser) return;
-    
-    await updateDoc(doc(db, "users", currentUser.uid), {
-        friends: arrayUnion(friendId)
-    });
-    
-    alert("تم إضافة الصديق بنجاح!");
-}
-
-// Start Chat
-async function startChat(userId, userName, userAvatar) {
-    chatWindow.classList.remove("hidden");
-    const activeChat = document.getElementById("active-chat");
-    const chatsList = document.getElementById("chats-list");
-    
-    activeChat.classList.remove("hidden");
-    chatsList.classList.add("hidden");
-    
-    document.getElementById("chat-user-name").textContent = userName;
-    document.getElementById("chat-user-avatar").src = userAvatar;
-    
-    const chatId = [currentUser.uid, userId].sort().join("_");
-    
-    if (messagesListener) messagesListener();
-    
-    const q = query(collection(db, "chats", chatId, "messages"), orderBy("timestamp", "asc"));
-    messagesListener = onSnapshot(q, (snapshot) => {
-        const messagesDiv = document.getElementById("chat-messages");
-        messagesDiv.innerHTML = "";
-        snapshot.forEach((doc) => {
-            const msg = doc.data();
-            const messageDiv = document.createElement("div");
-            messageDiv.className = `message ${msg.senderId === currentUser.uid ? 'sent' : 'received'}`;
-            messageDiv.textContent = msg.text;
-            messagesDiv.appendChild(messageDiv);
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-        });
-    });
-    
-    const sendBtn = document.getElementById("send-message-btn");
-    const messageInput = document.getElementById("chat-message-input");
-    
-    const newSendHandler = async () => {
-        const text = messageInput.value.trim();
-        if (!text) return;
-        
-        await addDoc(collection(db, "chats", chatId, "messages"), {
-            senderId: currentUser.uid,
-            text: text,
-            timestamp: serverTimestamp(),
-            read: false
-        });
-        
-        messageInput.value = "";
-    };
-    
-    sendBtn.onclick = newSendHandler;
-    messageInput.onkeypress = (e) => {
-        if (e.key === "Enter") newSendHandler();
-    };
 }
 
 // Load Notifications
 async function loadNotifications() {
     if (!currentUser) return;
     
-    const q = query(collection(db, "notifications"), where("userId", "==", currentUser.uid), orderBy("timestamp", "desc"));
+    const q = query(
+        collection(db, "notifications"),
+        where("userId", "==", currentUser.uid),
+        orderBy("timestamp", "desc")
+    );
     
-    notificationsListener = onSnapshot(q, (snapshot) => {
+    notificationsUnsubscribe = onSnapshot(q, async (snapshot) => {
         const notifList = document.getElementById("notifications-list");
         const unreadCount = snapshot.docs.filter(doc => !doc.data().read).length;
         document.getElementById("notif-badge").textContent = unreadCount;
         
         notifList.innerHTML = "";
-        snapshot.forEach(async (doc) => {
-            const notif = doc.data();
+        
+        for (const docSnap of snapshot.docs) {
+            const notif = docSnap.data();
             const fromUser = await getDoc(doc(db, "users", notif.fromUserId));
-            const fromUserData = fromUser.exists() ? fromUser.data() : null;
+            const fromData = fromUser.exists() ? fromUser.data() : null;
             
-            const notifDiv = document.createElement("div");
-            notifDiv.className = "notification-item";
-            notifDiv.onclick = async () => {
-                await updateDoc(doc(db, "notifications", doc.id), { read: true });
-                if (notif.type === "like" || notif.type === "comment") {
-                    // Scroll to post
-                }
+            const item = document.createElement("div");
+            item.className = `notification-item ${!notif.read ? 'unread' : ''}`;
+            item.onclick = async () => {
+                await updateDoc(doc(db, "notifications", docSnap.id), { read: true });
             };
             
             let message = "";
-            if (notif.type === "like") message = `أعجب بمنشورك`;
-            if (notif.type === "comment") message = `علق على منشورك`;
-            if (notif.type === "friend") message = `أضافك كصديق`;
+            if (notif.type === "like") message = "أعجب بمنشورك";
+            if (notif.type === "comment") message = "علق على منشورك";
             
-            notifDiv.innerHTML = `
-                <strong>${fromUserData?.fullName || 'مستخدم'}</strong>
-                <p>${message}</p>
-                <small>${new Date(notif.timestamp?.toDate()).toLocaleString('ar-DZ')}</small>
+            item.innerHTML = `
+                <div class="notif-icon">
+                    <i class="fas fa-${notif.type === 'like' ? 'heart' : 'comment'}"></i>
+                </div>
+                <div class="notif-content">
+                    <p><strong>${fromData?.fullName || 'مستخدم'}</strong> ${message}</p>
+                    <span class="notif-time">${getTimeAgo(notif.timestamp?.toDate())}</span>
+                </div>
             `;
-            notifList.appendChild(notifDiv);
-        });
-    });
-}
-
-// Search Users
-searchUsers.addEventListener("input", async (e) => {
-    const searchTerm = e.target.value.toLowerCase();
-    if (!searchTerm) return;
-    
-    const q = query(collection(db, "users"));
-    const snapshot = await getDocs(q);
-    const results = [];
-    
-    snapshot.forEach((doc) => {
-        const user = doc.data();
-        if (user.fullName.toLowerCase().includes(searchTerm) && user.uid !== currentUser?.uid) {
-            results.push(user);
+            notifList.appendChild(item);
         }
     });
+}
+
+// Load Chats
+async function loadChats() {
+    if (!currentUser) return;
     
-    // Show search results (you can implement a modal or dropdown)
-    console.log("Search results:", results);
-});
+    const chatsList = document.getElementById("chats-list");
+    const friends = await getFriends();
+    
+    chatsList.innerHTML = "";
+    
+    for (const friend of friends) {
+        const item = document.createElement("div");
+        item.className = "chat-item";
+        item.onclick = () => startChat(friend);
+        
+        const lastMessage = await getLastMessage(friend.uid);
+        
+        item.innerHTML = `
+            <img src="${friend.avatar}" alt="">
+            <div class="chat-info">
+                <h4>${friend.fullName}</h4>
+                <p>${lastMessage || 'اضغط للمراسلة'}</p>
+            </div>
+        `;
+        chatsList.appendChild(item);
+    }
+}
 
-// UI Event Listeners
-profileDropdown.addEventListener("click", () => {
-    dropdownMenu.classList.toggle("show");
-});
+async function getFriends() {
+    const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+    const userData = userDoc.data();
+    const friendIds = userData.friends || [];
+    
+    const friends = [];
+    for (const id of friendIds) {
+        const friendDoc = await getDoc(doc(db, "users", id));
+        if (friendDoc.exists()) friends.push(friendDoc.data());
+    }
+    return friends;
+}
 
-messagesBtn.addEventListener("click", () => {
-    chatWindow.classList.remove("hidden");
-    notificationsWindow.classList.add("hidden");
-    document.getElementById("chats-list").classList.remove("hidden");
-    document.getElementById("active-chat").classList.add("hidden");
-});
+async function getLastMessage(userId) {
+    const chatId = [currentUser.uid, userId].sort().join("_");
+    const q = query(collection(db, "chats", chatId, "messages"), orderBy("timestamp", "desc"));
+    const snapshot = await getDocs(q);
+    
+    if (!snapshot.empty) {
+        const lastMsg = snapshot.docs[0].data();
+        return lastMsg.text.length > 30 ? lastMsg.text.substring(0, 30) + "..." : lastMsg.text;
+    }
+    return null;
+}
 
-notificationsBtn.addEventListener("click", () => {
-    notificationsWindow.classList.toggle("hidden");
-    chatWindow.classList.add("hidden");
-});
+function startChat(user) {
+    currentChatUser = user;
+    const chatPanel = document.getElementById("chat-panel");
+    const chatsList = document.getElementById("chats-list");
+    const conversation = document.getElementById("chat-conversation");
+    
+    chatPanel.classList.add("open");
+    chatsList.classList.add("hidden");
+    conversation.classList.remove("hidden");
+    
+    document.getElementById("conv-name").textContent = user.fullName;
+    document.getElementById("conv-avatar").src = user.avatar;
+    document.getElementById("conv-status").textContent = user.online ? "متصل الآن" : "غير متصل";
+    document.getElementById("conv-status").style.color = user.online ? "#4caf50" : "#999";
+    
+    loadMessages(user.uid);
+}
 
-closeChat.addEventListener("click", () => {
-    chatWindow.classList.add("hidden");
-});
-
-closeNotifications.addEventListener("click", () => {
-    notificationsWindow.classList.add("hidden");
-});
-
-document.getElementById("close-active-chat").addEventListener("click", () => {
-    document.getElementById("active-chat").classList.add("hidden");
-    document.getElementById("chats-list").classList.remove("hidden");
-});
-
-// Setup Realtime Listeners
-function setupRealtimeListeners() {
-    // Listen for user status changes
-    onSnapshot(collection(db, "users"), (snapshot) => {
-        snapshot.docChanges().forEach((change) => {
-            if (change.type === "modified") {
-                const user = change.doc.data();
-                updateOnlineUsersList();
-            }
+function loadMessages(userId) {
+    const chatId = [currentUser.uid, userId].sort().join("_");
+    const messagesDiv = document.getElementById("conv-messages");
+    
+    if (messagesUnsubscribe) messagesUnsubscribe();
+    
+    const q = query(collection(db, "chats", chatId, "messages"), orderBy("timestamp", "asc"));
+    messagesUnsubscribe = onSnapshot(q, (snapshot) => {
+        messagesDiv.innerHTML = "";
+        
+        snapshot.forEach((doc) => {
+            const msg = doc.data();
+            const messageDiv = document.createElement("div");
+            messageDiv.className = `message ${msg.senderId === currentUser.uid ? 'sent' : 'received'}`;
+            messageDiv.textContent = msg.text;
+            messagesDiv.appendChild(messageDiv);
         });
+        
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
     });
 }
 
-function updateOnlineUsersList() {
-    // Refresh online users list
-    loadOnlineUsers();
-}
-
-// Close dropdown when clicking outside
-document.addEventListener("click", (e) => {
-    if (!profileDropdown.contains(e.target)) {
-        dropdownMenu.classList.remove("show");
-    }
+document.getElementById("send-message")?.addEventListener("click", async () => {
+    if (!currentChatUser) return;
+    
+    const input = document.getElementById("message-input");
+    const text = input.value.trim();
+    if (!text) return;
+    
+    const chatId = [currentUser.uid, currentChatUser.uid].sort().join("_");
+    
+    await addDoc(collection(db, "chats", chatId, "messages"), {
+        senderId: currentUser.uid,
+        text: text,
+        timestamp: serverTimestamp(),
+        read: false
+    });
+    
+    input.value = "";
 });
 
-console.log("DZ Teach App initialized successfully!");
+document.getElementById("message-input")?.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") document.getElementById("send-message").click();
+});
+
+document.getElementById("back-to-chats")?.addEventListener("click", () => {
+    document.getElementById("chats-list").classList.remove("hidden");
+    document.getElementById("chat-conversation").classList.add("hidden");
+    if (messagesUnsubscribe) messagesUnsubscribe();
+});
+
+// Toggle Panels
+document.getElementById("chat-toggle")?.addEventListener("click", () => {
+    document.getElementById("chat-panel").classList.toggle("open");
+    document.getElementById("notif-panel").classList.remove("open");
+});
+
+document.getElementById("notif-toggle")?.addEventListener("click", () => {
+    document.getElementById("notif-panel").classList.toggle("open");
+    document.getElementById("chat-panel").classList.remove("open");
+});
+
+document.getElementById("close-chat")?.addEventListener("click", () => {
+    document.getElementById("chat-panel").classList.remove("open");
+});
+
+document.getElementById("close-notif")?.addEventListener("click", () => {
+    document.getElementById("notif-panel").classList.remove("open");
+});
+
+// Profile Menu
+document.querySelector(".profile-menu")?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    document.getElementById("profile-dropdown").classList.toggle("show");
+});
+
+document.addEventListener("click", () => {
+    document.getElementById("profile-dropdown")?.classList.remove("show");
+});
+
+document.getElementById("profile-link")?.addEventListener("click", (e) => {
+    e.preventDefault();
+    document.getElementById("profile-dropdown").classList.remove("show");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+});
+
+document.getElementById("edit-profile-link")?.addEventListener("click", (e) => {
+    e.preventDefault();
+    document.getElementById("profile-dropdown").classList.remove("show");
+    document.getElementById("edit-profile-modal").classList.add("open");
+});
+
+document.querySelectorAll(".close-modal, .modal .close-modal")?.forEach(btn => {
+    btn.addEventListener("click", () => {
+        document.getElementById("edit-profile-modal")?.classList.remove("open");
+    });
+});
+
+// Helper Functions
+function getTimeAgo(date) {
+    if (!date) return "الآن";
+    const seconds = Math.floor((new Date() - date) / 1000);
+    
+    if (seconds < 60) return "الآن";
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return `${minutes} دقيقة`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours} ساعة`;
+    const days = Math.floor(hours / 24);
+    if (days < 7) return `${days} يوم`;
+    return date.toLocaleDateString("ar-DZ");
+}
+
+console.log("✅ DZ Teach App initialized successfully!");

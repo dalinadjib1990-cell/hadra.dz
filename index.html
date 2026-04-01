@@ -1,49 +1,225 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <title>DZ Teach</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>DZ Teach - منصة الأساتذة الجزائريين</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-
-<!-- تسجيل -->
-<div id="login-div" class="card">
-  <h2>تسجيل الدخول / إنشاء حساب</h2>
-
-  <input id="name" placeholder="الاسم">
-  <input id="lastname" placeholder="اللقب">
-  <input id="wilaya" placeholder="الولاية">
-  <input id="subject" placeholder="التخصص">
-  <input id="level" placeholder="الطور">
-  <input id="school" placeholder="المؤسسة">
-
-  <input id="email" placeholder="Email">
-  <input id="password" type="password" placeholder="Password">
-
-  <button id="signup-btn">إنشاء حساب</button>
-  <button id="login-btn">تسجيل الدخول</button>
-</div>
-
-<!-- التطبيق -->
-<div id="app" class="hidden">
-
-  <div class="header">
-    <h2>DZ Teach</h2>
-    <button id="logout-btn">خروج</button>
-  </div>
-
-  <!-- منشور -->
-  <div class="card">
-    <input id="post-input" placeholder="اكتب منشور...">
-    <button id="post-btn">نشر</button>
-  </div>
-
-  <!-- المنشورات -->
-  <div id="posts"></div>
-
-</div>
-
-<script type="module" src="app.js"></script>
+    <!-- صفحة تسجيل الدخول -->
+    <div id="login-page" class="page active">
+        <div class="login-container">
+            <div class="logo-container">
+                <i class="fas fa-chalkboard-teacher logo-icon"></i>
+                <h1 class="logo-text">DZ Teach</h1>
+                <p class="logo-subtitle">منصة الأساتذة الجزائريين</p>
+            </div>
+            
+            <div class="login-tabs">
+                <button class="tab-btn active" data-tab="login">تسجيل الدخول</button>
+                <button class="tab-btn" data-tab="register">إنشاء حساب</button>
+            </div>
+            
+            <!-- نموذج تسجيل الدخول -->
+            <div id="login-form" class="form-container active">
+                <div class="input-group">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="login-email" placeholder="البريد الإلكتروني" required>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="login-password" placeholder="كلمة المرور" required>
+                </div>
+                <button id="login-submit" class="btn-primary">دخول <i class="fas fa-arrow-left"></i></button>
+                <button id="google-login" class="btn-google"><i class="fab fa-google"></i> تسجيل الدخول عبر Google</button>
+            </div>
+            
+            <!-- نموذج إنشاء حساب -->
+            <div id="register-form" class="form-container">
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="reg-firstname" placeholder="الاسم" required>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-user-tag"></i>
+                    <input type="text" id="reg-lastname" placeholder="اللقب" required>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-graduation-cap"></i>
+                    <select id="reg-specialty" required>
+                        <option value="">الاختصاص</option>
+                        <option value="رياضيات">رياضيات</option>
+                        <option value="علوم طبيعية">علوم طبيعية</option>
+                        <option value="فيزياء">فيزياء</option>
+                        <option value="لغة عربية">لغة عربية</option>
+                        <option value="لغة فرنسية">لغة فرنسية</option>
+                        <option value="لغة إنجليزية">لغة إنجليزية</option>
+                        <option value="تاريخ وجغرافيا">تاريخ وجغرافيا</option>
+                        <option value="فلسفة">فلسفة</option>
+                        <option value="تربية إسلامية">تربية إسلامية</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-chart-line"></i>
+                    <select id="reg-level" required>
+                        <option value="">الطور</option>
+                        <option value="ابتدائي">طور الابتدائي</option>
+                        <option value="متوسط">طور المتوسط</option>
+                        <option value="ثانوي">طور الثانوي</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <select id="reg-wilaya" required>
+                        <option value="">الولاية</option>
+                        <option value="أدرار">أدرار</option>
+                        <option value="الشلف">الشلف</option>
+                        <option value="الأغواط">الأغواط</option>
+                        <option value="أم البواقي">أم البواقي</option>
+                        <option value="باتنة">باتنة</option>
+                        <option value="بجاية">بجاية</option>
+                        <option value="بسكرة">بسكرة</option>
+                        <option value="بشار">بشار</option>
+                        <option value="البليدة">البليدة</option>
+                        <option value="البويرة">البويرة</option>
+                        <option value="الجزائر">الجزائر</option>
+                        <option value="وهران">وهران</option>
+                        <option value="قسنطينة">قسنطينة</option>
+                        <option value="عنابة">عنابة</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="reg-email" placeholder="البريد الإلكتروني" required>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="reg-password" placeholder="كلمة المرور" required>
+                </div>
+                <button id="register-submit" class="btn-primary">إنشاء حساب <i class="fas fa-user-plus"></i></button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- الصفحة الرئيسية للتطبيق -->
+    <div id="app-page" class="page">
+        <!-- الشريط العلوي -->
+        <nav class="navbar">
+            <div class="nav-brand">
+                <i class="fas fa-chalkboard-teacher"></i>
+                <span>DZ Teach</span>
+            </div>
+            <div class="nav-search">
+                <i class="fas fa-search"></i>
+                <input type="text" id="search-users" placeholder="ابحث عن أساتذة...">
+            </div>
+            <div class="nav-icons">
+                <button class="nav-icon" id="notifications-btn">
+                    <i class="fas fa-bell"></i>
+                    <span id="notif-badge" class="badge">0</span>
+                </button>
+                <button class="nav-icon" id="messages-btn">
+                    <i class="fas fa-comment-dots"></i>
+                    <span id="msg-badge" class="badge">0</span>
+                </button>
+                <div class="profile-menu">
+                    <img id="profile-avatar" class="profile-avatar-small" src="https://via.placeholder.com/40" alt="Profile">
+                    <div class="dropdown-menu" id="dropdown-menu">
+                        <a href="#" id="profile-link"><i class="fas fa-user"></i> ملفي الشخصي</a>
+                        <a href="#" id="settings-link"><i class="fas fa-cog"></i> الإعدادات</a>
+                        <a href="#" id="logout-btn"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        
+        <div class="main-container">
+            <!-- الشريط الجانبي الأيسر -->
+            <aside class="sidebar-left">
+                <div class="profile-card">
+                    <img id="sidebar-avatar" class="profile-avatar-large" src="https://via.placeholder.com/100" alt="Profile">
+                    <h3 id="sidebar-name">اسم المستخدم</h3>
+                    <p id="sidebar-specialty">الاختصاص</p>
+                    <p id="sidebar-level">الطور</p>
+                    <p id="sidebar-wilaya">الولاية</p>
+                    <button id="edit-profile-btn" class="btn-outline">تعديل الملف</button>
+                </div>
+                
+                <div class="online-friends">
+                    <h4><i class="fas fa-circle online-icon"></i> متصلون الآن</h4>
+                    <div id="online-users-list" class="online-list"></div>
+                </div>
+            </aside>
+            
+            <!-- المحتوى الرئيسي -->
+            <main class="main-content">
+                <div class="create-post">
+                    <img id="post-avatar" class="post-avatar" src="https://via.placeholder.com/50" alt="Avatar">
+                    <input type="text" id="post-input" placeholder="ماذا تريد أن تشارك زملائك؟">
+                    <div class="post-actions">
+                        <button id="image-upload-btn" class="action-btn"><i class="fas fa-image"></i> صورة</button>
+                        <button id="submit-post-btn" class="btn-primary-small">نشر</button>
+                    </div>
+                    <input type="file" id="image-file" accept="image/*" style="display: none;">
+                </div>
+                
+                <div id="posts-container" class="posts-container"></div>
+            </main>
+            
+            <!-- الشريط الجانبي الأيمن -->
+            <aside class="sidebar-right">
+                <div class="suggestions">
+                    <h4>أساتذة مقترحون</h4>
+                    <div id="suggestions-list" class="suggestions-list"></div>
+                </div>
+                
+                <div class="trending-topics">
+                    <h4>المواضيع الرائجة</h4>
+                    <div class="trending-tags">
+                        <span class="tag">#امتحانات</span>
+                        <span class="tag">#مناهج_جديدة</span>
+                        <span class="tag">#تكوين_الأساتذة</span>
+                        <span class="tag">#بكالوريا2024</span>
+                    </div>
+                </div>
+            </aside>
+        </div>
+        
+        <!-- نافذة المحادثات المنبثقة -->
+        <div id="chat-window" class="chat-window hidden">
+            <div class="chat-header">
+                <h3>المحادثات</h3>
+                <button id="close-chat"><i class="fas fa-times"></i></button>
+            </div>
+            <div id="chats-list" class="chats-list"></div>
+            <div id="active-chat" class="active-chat hidden">
+                <div class="active-chat-header">
+                    <img id="chat-user-avatar" class="chat-avatar-small" src="">
+                    <h4 id="chat-user-name"></h4>
+                    <span id="chat-user-status" class="status-indicator"></span>
+                    <button id="close-active-chat"><i class="fas fa-arrow-left"></i></button>
+                </div>
+                <div id="chat-messages" class="chat-messages"></div>
+                <div class="chat-input-area">
+                    <input type="text" id="chat-message-input" placeholder="اكتب رسالتك...">
+                    <button id="send-message-btn"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- نافذة الإشعارات -->
+        <div id="notifications-window" class="notifications-window hidden">
+            <div class="notifications-header">
+                <h3>الإشعارات</h3>
+                <button id="close-notifications"><i class="fas fa-times"></i></button>
+            </div>
+            <div id="notifications-list" class="notifications-list"></div>
+        </div>
+    </div>
+    
+    <script type="module" src="app.js"></script>
 </body>
 </html>

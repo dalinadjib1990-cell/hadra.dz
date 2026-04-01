@@ -2,9 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DZ Teach</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>DZ Teach - منصة الأساتذة الجزائريين</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -12,776 +12,619 @@
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: 'Cairo', sans-serif;
-            background: #0a0a0a;
-            color: white;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
         }
-        
-        /* شاشة التحميل */
-        #splash {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #0a0a0a;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
+
+        /* Utility Classes */
+        .hidden {
+            display: none !important;
         }
-        
-        /* صفحة تسجيل الدخول */
-        .auth-page {
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Login Page */
+        .login-container {
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #0a0a0a, #1a1a2e);
             padding: 20px;
         }
-        
-        .auth-card {
-            background: #111;
-            border-radius: 24px;
+
+        .login-card {
+            background: white;
+            border-radius: 20px;
             padding: 40px;
-            max-width: 450px;
             width: 100%;
-            border: 1px solid #8b5cf6;
-            box-shadow: 0 0 30px rgba(139, 92, 246, 0.3);
+            max-width: 450px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: fadeInUp 0.5s ease;
         }
-        
-        .auth-card h2 {
+
+        .logo {
             text-align: center;
             margin-bottom: 30px;
-            color: #8b5cf6;
         }
-        
+
+        .logo i {
+            font-size: 60px;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .logo h1 {
+            font-size: 28px;
+            color: #333;
+        }
+
+        .logo p {
+            color: #666;
+            font-size: 14px;
+        }
+
         .input-group {
+            position: relative;
             margin-bottom: 20px;
         }
-        
-        .input-group input, .input-group select {
+
+        .input-group i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+
+        .input-group input {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #333;
-            border-radius: 12px;
-            background: #1a1a1a;
-            color: white;
+            padding: 12px 45px 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s;
             font-family: 'Cairo', sans-serif;
         }
-        
-        .input-group input:focus, .input-group select:focus {
+
+        .input-group input:focus {
             outline: none;
-            border-color: #8b5cf6;
+            border-color: #667eea;
         }
-        
+
         .btn-primary {
             width: 100%;
             padding: 12px;
-            background: linear-gradient(135deg, #8b5cf6, #ec489a);
-            border: none;
-            border-radius: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
             cursor: pointer;
+            transition: transform 0.2s;
             margin-bottom: 10px;
         }
-        
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+        }
+
         .btn-google {
             width: 100%;
             padding: 12px;
-            background: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 12px;
-            color: white;
+            background: white;
+            color: #666;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
             cursor: pointer;
+            transition: all 0.3s;
         }
-        
-        .tab-buttons {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
+
+        .btn-google:hover {
+            background: #f5f5f5;
         }
-        
-        .tab-btn {
-            flex: 1;
-            padding: 10px;
-            background: #1a1a1a;
-            border: none;
-            border-radius: 12px;
-            color: #888;
-            cursor: pointer;
-        }
-        
-        .tab-btn.active {
-            background: #8b5cf6;
-            color: white;
-        }
-        
-        .form {
-            display: none;
-        }
-        
-        .form.active {
-            display: block;
-        }
-        
-        /* الصفحة الرئيسية */
-        .app-page {
-            display: none;
+
+        /* Chat Page */
+        .chat-page {
             min-height: 100vh;
-            background: #0a0a0a;
+            background: #f5f5f5;
         }
-        
+
         .navbar {
-            background: #111;
-            padding: 15px 20px;
+            background: white;
+            padding: 15px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #222;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             position: sticky;
             top: 0;
+            z-index: 100;
         }
-        
-        .nav-brand {
-            font-size: 24px;
-            font-weight: bold;
-            color: #8b5cf6;
-        }
-        
-        .nav-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
-        }
-        
-        .container {
-            display: flex;
-            max-width: 1200px;
-            margin: 20px auto;
-            gap: 20px;
-            padding: 0 20px;
-        }
-        
-        .sidebar {
-            flex: 1;
-        }
-        
-        .main {
-            flex: 2;
-        }
-        
-        .profile-card {
-            background: #111;
-            border-radius: 20px;
-            padding: 20px;
-            text-align: center;
-            margin-bottom: 20px;
-            border: 1px solid #222;
-        }
-        
-        .profile-avatar {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            margin-bottom: 15px;
-        }
-        
-        .create-post {
-            background: #111;
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border: 1px solid #222;
-        }
-        
-        .create-post textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #333;
-            border-radius: 12px;
-            background: #1a1a1a;
-            color: white;
-            resize: none;
-            font-family: 'Cairo', sans-serif;
-        }
-        
-        .post-card {
-            background: #111;
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border: 1px solid #222;
-        }
-        
-        .post-header {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 15px;
-        }
-        
-        .post-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-        }
-        
-        .post-stats {
-            display: flex;
-            gap: 20px;
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid #222;
-        }
-        
-        .post-stats button {
-            background: none;
-            border: none;
-            color: #888;
-            cursor: pointer;
-        }
-        
-        .online-list {
-            background: #111;
-            border-radius: 20px;
-            padding: 20px;
-            border: 1px solid #222;
-        }
-        
-        .online-item {
+
+        .navbar-brand {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 10px;
-            cursor: pointer;
+            gap: 10px;
         }
-        
-        .hidden {
-            display: none;
+
+        .navbar-brand i {
+            font-size: 28px;
+            color: #667eea;
         }
-        
-        button {
-            cursor: pointer;
+
+        .navbar-brand h2 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        
-        .message {
-            margin-bottom: 10px;
-            padding: 8px 12px;
-            border-radius: 12px;
-            max-width: 70%;
-        }
-        
-        .message.sent {
-            background: #8b5cf6;
-            align-self: flex-end;
-            margin-right: auto;
-        }
-        
-        .message.received {
-            background: #1a1a1a;
-            align-self: flex-start;
-        }
-        
-        .chat-window {
-            position: fixed;
-            bottom: 0;
-            right: 20px;
-            width: 350px;
-            background: #111;
-            border-radius: 20px 20px 0 0;
-            border: 1px solid #222;
-            z-index: 1000;
-        }
-        
-        .chat-header {
-            background: #8b5cf6;
-            padding: 12px;
-            border-radius: 20px 20px 0 0;
+
+        .navbar-actions {
             display: flex;
-            justify-content: space-between;
+            gap: 15px;
+            align-items: center;
         }
-        
-        .chat-messages {
-            height: 300px;
+
+        .logout-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+            transition: color 0.3s;
+        }
+
+        .logout-btn:hover {
+            color: #e74c3c;
+        }
+
+        .chat-container {
+            max-width: 800px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .chat-header h3 {
+            font-size: 18px;
+            font-weight: normal;
+        }
+
+        .messages-area {
+            height: 500px;
             overflow-y: auto;
-            padding: 12px;
+            padding: 20px;
+            background: #fafafa;
+        }
+
+        .message {
+            margin-bottom: 15px;
             display: flex;
             flex-direction: column;
         }
-        
-        .chat-input {
-            display: flex;
-            padding: 12px;
-            border-top: 1px solid #222;
+
+        .message.sent {
+            align-items: flex-end;
         }
-        
-        .chat-input input {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid #333;
-            border-radius: 20px;
-            background: #1a1a1a;
-            color: white;
+
+        .message.received {
+            align-items: flex-start;
         }
-        
-        .chat-input button {
+
+        .message-bubble {
+            max-width: 70%;
             padding: 10px 15px;
-            background: #8b5cf6;
+            border-radius: 18px;
+            position: relative;
+        }
+
+        .message.sent .message-bubble {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.received .message-bubble {
+            background: white;
+            color: #333;
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .message-name {
+            font-size: 12px;
+            margin-bottom: 5px;
+            color: #999;
+        }
+
+        .message.sent .message-name {
+            text-align: right;
+        }
+
+        .message-time {
+            font-size: 10px;
+            margin-top: 5px;
+            opacity: 0.7;
+        }
+
+        .input-area {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            gap: 10px;
+        }
+
+        .input-area input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 14px;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .input-area input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .send-btn {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border: none;
-            border-radius: 20px;
-            margin-left: 8px;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .send-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .online-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: #4caf50;
+            border-radius: 50%;
+            margin-right: 5px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 10px 15px;
+            }
+            
+            .chat-container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .messages-area {
+                height: 400px;
+            }
+            
+            .message-bubble {
+                max-width: 85%;
+            }
         }
     </style>
 </head>
 <body>
-
-<!-- شاشة تحميل -->
-<div id="splash">
-    <div style="text-align:center">
-        <i class="fas fa-chalkboard-user" style="font-size: 60px; color: #8b5cf6;"></i>
-        <h2>DZ Teach</h2>
-        <div style="width: 30px; height: 30px; border: 3px solid #8b5cf6; border-top-color: transparent; border-radius: 50%; margin: 20px auto; animation: spin 1s linear infinite;"></div>
-    </div>
-</div>
-
-<style>
-    @keyframes spin {
-        to { transform: rotate(360deg); }
-    }
-</style>
-
-<!-- صفحة تسجيل الدخول -->
-<div id="authPage" class="auth-page">
-    <div class="auth-card">
-        <h2><i class="fas fa-chalkboard-user"></i> DZ Teach</h2>
-        
-        <div class="tab-buttons">
-            <button class="tab-btn active" data-tab="login">تسجيل الدخول</button>
-            <button class="tab-btn" data-tab="register">إنشاء حساب</button>
-        </div>
-        
-        <!-- تسجيل الدخول -->
-        <div id="loginForm" class="form active">
-            <div class="input-group">
-                <input type="email" id="loginEmail" placeholder="البريد الإلكتروني">
-            </div>
-            <div class="input-group">
-                <input type="password" id="loginPassword" placeholder="كلمة المرور">
-            </div>
-            <button id="loginBtn" class="btn-primary">دخول</button>
-            <button id="googleLoginBtn" class="btn-google"><i class="fab fa-google"></i> دخول عبر Google</button>
-        </div>
-        
-        <!-- إنشاء حساب -->
-        <div id="registerForm" class="form">
-            <div class="input-group">
-                <input type="text" id="regName" placeholder="الاسم الكامل">
-            </div>
-            <div class="input-group">
-                <select id="regSpecialty">
-                    <option value="">الاختصاص</option>
-                    <option value="رياضيات">رياضيات</option>
-                    <option value="علوم طبيعية">علوم طبيعية</option>
-                    <option value="فيزياء">فيزياء</option>
-                    <option value="لغة عربية">لغة عربية</option>
-                </select>
-            </div>
-            <div class="input-group">
-                <select id="regLevel">
-                    <option value="">الطور</option>
-                    <option value="ابتدائي">ابتدائي</option>
-                    <option value="متوسط">متوسط</option>
-                    <option value="ثانوي">ثانوي</option>
-                </select>
-            </div>
-            <div class="input-group">
-                <select id="regWilaya">
-                    <option value="">الولاية</option>
-                    <option value="الجزائر">الجزائر</option>
-                    <option value="وهران">وهران</option>
-                    <option value="قسنطينة">قسنطينة</option>
-                </select>
-            </div>
-            <div class="input-group">
-                <input type="email" id="regEmail" placeholder="البريد الإلكتروني">
-            </div>
-            <div class="input-group">
-                <input type="password" id="regPassword" placeholder="كلمة المرور">
-            </div>
-            <button id="registerBtn" class="btn-primary">إنشاء حساب</button>
-        </div>
-    </div>
-</div>
-
-<!-- الصفحة الرئيسية -->
-<div id="appPage" class="app-page">
-    <div class="navbar">
-        <div class="nav-brand">DZ Teach</div>
-        <div class="profile-menu" style="position: relative;">
-            <img id="navAvatar" class="nav-avatar" src="https://via.placeholder.com/40">
-            <div id="dropdown" style="position: absolute; top: 50px; right: 0; background: #111; border: 1px solid #222; border-radius: 12px; display: none; width: 150px;">
-                <button id="logoutBtn" style="padding: 10px; width: 100%; background: none; border: none; color: white; text-align: right;">تسجيل خروج</button>
-            </div>
-        </div>
-    </div>
-    
-    <div class="container">
-        <div class="sidebar">
-            <div class="profile-card">
-                <img id="profileAvatar" class="profile-avatar" src="https://via.placeholder.com/100">
-                <h3 id="profileName"></h3>
-                <p id="profileSpecialty"></p>
-            </div>
-            <div class="online-list">
-                <h4>متصلون الآن</h4>
-                <div id="onlineUsers"></div>
-            </div>
-        </div>
-        
-        <div class="main">
-            <div class="create-post">
-                <textarea id="postText" rows="3" placeholder="ماذا تريد أن تشارك؟"></textarea>
-                <button id="publishBtn" class="btn-primary" style="margin-top: 10px;">نشر</button>
-            </div>
-            <div id="postsList"></div>
-        </div>
-    </div>
-    
-    <!-- نافذة المحادثة -->
-    <div id="chatWindow" class="chat-window hidden">
-        <div class="chat-header">
-            <span id="chatUserName"></span>
-            <button id="closeChat" style="background: none; border: none; color: white;">✕</button>
-        </div>
-        <div id="chatMessages" class="chat-messages"></div>
-        <div class="chat-input">
-            <input type="text" id="chatInput" placeholder="اكتب رسالة...">
-            <button id="sendChatBtn">إرسال</button>
-        </div>
-    </div>
-</div>
-
-<script type="importmap">
-    {
-        "imports": {
-            "firebase/app": "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js",
-            "firebase/auth": "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js",
-            "firebase/firestore": "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js"
-        }
-    }
-</script>
-
-<script type="module">
-    import { initializeApp } from "firebase/app";
-    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, updateProfile } from "firebase/auth";
-    import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, setDoc, getDoc, updateDoc, arrayUnion, where, getDocs } from "firebase/firestore";
-
-    // Firebase Config
-    const firebaseConfig = {
-        apiKey: "AIzaSyDg_T6I4mksgG1mgxTnhQI0DA4MhBYGDqU",
-        authDomain: "hadra-dz.firebaseapp.com",
-        projectId: "hadra-dz",
-        storageBucket: "hadra-dz.appspot.com",
-        messagingSenderId: "765723444730",
-        appId: "1:765723444730:web:4d816875f8e8a45f939043"
-    };
-
-    // Initialize
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-    const googleProvider = new GoogleAuthProvider();
-
-    let currentUser = null;
-    let currentChatUser = null;
-    let messagesUnsub = null;
-
-    // إخفاء شاشة التحميل
-    setTimeout(() => {
-        document.getElementById('splash').style.display = 'none';
-    }, 1000);
-
-    // تبديل التبويبات
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            document.querySelectorAll('.form').forEach(f => f.classList.remove('active'));
-            document.getElementById(btn.dataset.tab + 'Form').classList.add('active');
-        });
-    });
-
-    // تسجيل الدخول
-    document.getElementById('loginBtn').addEventListener('click', async () => {
-        const email = document.getElementById('loginEmail').value;
-        const password = document.getElementById('loginPassword').value;
-        try {
-            await signInWithEmailAndPassword(auth, email, password);
-        } catch (e) {
-            alert('خطأ: ' + e.message);
-        }
-    });
-
-    // تسجيل عبر Google
-    document.getElementById('googleLoginBtn').addEventListener('click', async () => {
-        try {
-            const result = await signInWithPopup(auth, googleProvider);
-            const user = result.user;
-            const userRef = doc(db, 'users', user.uid);
-            const userSnap = await getDoc(userRef);
-            if (!userSnap.exists()) {
-                await setDoc(userRef, {
-                    uid: user.uid,
-                    fullName: user.displayName || user.email,
-                    email: user.email,
-                    avatar: user.photoURL || 'https://via.placeholder.com/100',
-                    specialty: 'غير محدد',
-                    level: 'غير محدد',
-                    wilaya: 'غير محدد',
-                    online: true,
-                    createdAt: serverTimestamp()
-                });
-            } else {
-                await updateDoc(userRef, { online: true });
-            }
-        } catch (e) {
-            alert('خطأ: ' + e.message);
-        }
-    });
-
-    // إنشاء حساب
-    document.getElementById('registerBtn').addEventListener('click', async () => {
-        const fullName = document.getElementById('regName').value;
-        const specialty = document.getElementById('regSpecialty').value;
-        const level = document.getElementById('regLevel').value;
-        const wilaya = document.getElementById('regWilaya').value;
-        const email = document.getElementById('regEmail').value;
-        const password = document.getElementById('regPassword').value;
-
-        if (!fullName || !specialty || !level || !wilaya || !email || !password) {
-            alert('الرجاء ملء جميع الحقول');
-            return;
-        }
-
-        try {
-            const userCred = await createUserWithEmailAndPassword(auth, email, password);
-            const user = userCred.user;
-            await updateProfile(user, { displayName: fullName });
-            await setDoc(doc(db, 'users', user.uid), {
-                uid: user.uid,
-                fullName: fullName,
-                email: email,
-                avatar: `https://ui-avatars.com/api/?background=8b5cf6&color=fff&size=100&name=${fullName}`,
-                specialty: specialty,
-                level: level,
-                wilaya: wilaya,
-                online: true,
-                createdAt: serverTimestamp()
-            });
-            alert('تم إنشاء الحساب بنجاح!');
-        } catch (e) {
-            alert('خطأ: ' + e.message);
-        }
-    });
-
-    // حالة المستخدم
-    onAuthStateChanged(auth, async (user) => {
-        if (user) {
-            currentUser = user;
-            document.getElementById('authPage').style.display = 'none';
-            document.getElementById('appPage').style.display = 'block';
-            
-            // جلب بيانات المستخدم
-            const userDoc = await getDoc(doc(db, 'users', user.uid));
-            if (userDoc.exists()) {
-                const data = userDoc.data();
-                document.getElementById('profileName').innerText = data.fullName;
-                document.getElementById('profileSpecialty').innerText = data.specialty;
-                document.getElementById('profileAvatar').src = data.avatar;
-                document.getElementById('navAvatar').src = data.avatar;
-            }
-            
-            await updateDoc(doc(db, 'users', user.uid), { online: true });
-            
-            // تحميل المنشورات
-            loadPosts();
-            // تحميل المستخدمين المتصلين
-            loadOnlineUsers();
-            
-        } else {
-            currentUser = null;
-            document.getElementById('authPage').style.display = 'flex';
-            document.getElementById('appPage').style.display = 'none';
-        }
-    });
-
-    // تحميل المنشورات
-    async function loadPosts() {
-        const q = query(collection(db, 'posts'), orderBy('timestamp', 'desc'));
-        onSnapshot(q, async (snapshot) => {
-            const postsDiv = document.getElementById('postsList');
-            postsDiv.innerHTML = '';
-            
-            for (const docSnap of snapshot.docs) {
-                const post = docSnap.data();
-                const userDoc = await getDoc(doc(db, 'users', post.userId));
-                const userName = userDoc.exists() ? userDoc.data().fullName : 'مستخدم';
-                const userAvatar = userDoc.exists() ? userDoc.data().avatar : 'https://via.placeholder.com/50';
+    <!-- صفحة تسجيل الدخول -->
+    <div id="login-div">
+        <div class="login-container">
+            <div class="login-card">
+                <div class="logo">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    <h1>DZ Teach</h1>
+                    <p>منصة الأساتذة الجزائريين</p>
+                </div>
                 
-                const postDiv = document.createElement('div');
-                postDiv.className = 'post-card';
-                postDiv.innerHTML = `
-                    <div class="post-header">
-                        <img class="post-avatar" src="${userAvatar}">
-                        <div>
-                            <strong>${userName}</strong><br>
-                            <small style="color:#888">${post.timestamp ? new Date(post.timestamp.toDate()).toLocaleString('ar-DZ') : 'الآن'}</small>
-                        </div>
-                    </div>
-                    <p>${post.text}</p>
-                    <div class="post-stats">
-                        <button class="like-btn" data-id="${docSnap.id}"><i class="fas fa-heart"></i> ${post.likes?.length || 0}</button>
-                    </div>
-                `;
-                postsDiv.appendChild(postDiv);
+                <div class="input-group">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="email" placeholder="البريد الإلكتروني">
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="password" placeholder="كلمة المرور">
+                </div>
+                
+                <button id="login-btn" class="btn-primary">
+                    <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
+                </button>
+                
+                <button id="google-btn" class="btn-google">
+                    <i class="fab fa-google"></i> تسجيل الدخول عبر Google
+                </button>
+                
+                <p style="text-align: center; margin-top: 20px; color: #666; font-size: 12px;">
+                    منصة خاصة بالأساتذة في الجزائر
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- صفحة المحادثات -->
+    <div id="chat-div" class="chat-page hidden">
+        <nav class="navbar">
+            <div class="navbar-brand">
+                <i class="fas fa-chalkboard-teacher"></i>
+                <h2>DZ Teach</h2>
+            </div>
+            <div class="navbar-actions">
+                <span id="user-email" style="color: #666; font-size: 14px;"></span>
+                <button id="logout-btn" class="logout-btn" title="تسجيل الخروج">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </nav>
+        
+        <div class="chat-container">
+            <div class="chat-header">
+                <h3>
+                    <span class="online-indicator"></span>
+                    غرفة المحادثة العامة
+                </h3>
+            </div>
+            
+            <div id="messages" class="messages-area"></div>
+            
+            <div class="input-area">
+                <input type="text" id="message-input" placeholder="اكتب رسالتك هنا...">
+                <button id="send-btn" class="send-btn">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "firebase/app": "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js",
+                "firebase/auth": "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js",
+                "firebase/firestore": "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import { initializeApp } from "firebase/app";
+        import { getAuth, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "firebase/auth";
+        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "firebase/firestore";
+
+        // Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyDg_T6I4mksgG1mgxTnhQI0DA4MhBYGDqU",
+            authDomain: "hadra-dz.firebaseapp.com",
+            projectId: "hadra-dz",
+            storageBucket: "hadra-dz.appspot.com",
+            messagingSenderId: "765723444730",
+            appId: "1:765723444730:web:4d816875f8e8a45f939043"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Elements
+        const loginDiv = document.getElementById("login-div");
+        const chatDiv = document.getElementById("chat-div");
+        const emailInput = document.getElementById("email");
+        const passwordInput = document.getElementById("password");
+        const loginBtn = document.getElementById("login-btn");
+        const googleBtn = document.getElementById("google-btn");
+        const logoutBtn = document.getElementById("logout-btn");
+        const sendBtn = document.getElementById("send-btn");
+        const messageInput = document.getElementById("message-input");
+        const messagesDiv = document.getElementById("messages");
+        const userEmailSpan = document.getElementById("user-email");
+
+        // Format time
+        function formatTime(timestamp) {
+            if (!timestamp) return "";
+            const date = timestamp.toDate();
+            return date.toLocaleTimeString('ar-DZ', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        // Create message element
+        function createMessageElement(msg, isCurrentUser) {
+            const messageDiv = document.createElement("div");
+            messageDiv.className = `message ${isCurrentUser ? 'sent' : 'received'}`;
+            
+            const time = msg.timestamp ? formatTime(msg.timestamp) : "";
+            const name = isCurrentUser ? "أنت" : msg.name?.split('@')[0] || "مستخدم";
+            
+            messageDiv.innerHTML = `
+                <div class="message-name">${name}</div>
+                <div class="message-bubble">
+                    ${escapeHtml(msg.text)}
+                    <div class="message-time">${time}</div>
+                </div>
+            `;
+            
+            return messageDiv;
+        }
+
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Load messages in real-time
+        function loadMessages() {
+            const q = query(collection(db, "messages"), orderBy("timestamp", "asc"));
+            
+            onSnapshot(q, (snapshot) => {
+                messagesDiv.innerHTML = "";
+                
+                snapshot.forEach((doc) => {
+                    const msg = doc.data();
+                    const isCurrentUser = msg.uid === auth.currentUser?.uid;
+                    const messageElement = createMessageElement(msg, isCurrentUser);
+                    messagesDiv.appendChild(messageElement);
+                });
+                
+                // Scroll to bottom
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            }, (error) => {
+                console.error("Error loading messages:", error);
+                messagesDiv.innerHTML = '<div style="text-align:center;color:#999;">خطأ في تحميل الرسائل</div>';
+            });
+        }
+
+        // Login with Email
+        loginBtn.addEventListener("click", async () => {
+            const email = emailInput.value.trim();
+            const password = passwordInput.value.trim();
+            
+            if (!email || !password) {
+                alert("الرجاء إدخال البريد الإلكتروني وكلمة المرور");
+                return;
             }
             
-            // إضافة حدث الإعجاب
-            document.querySelectorAll('.like-btn').forEach(btn => {
-                btn.addEventListener('click', async () => {
-                    const postId = btn.dataset.id;
-                    const postRef = doc(db, 'posts', postId);
-                    const postDoc = await getDoc(postRef);
-                    const postData = postDoc.data();
-                    if (postData.likes?.includes(currentUser.uid)) {
-                        await updateDoc(postRef, { likes: arrayRemove(currentUser.uid) });
-                    } else {
-                        await updateDoc(postRef, { likes: arrayUnion(currentUser.uid) });
-                    }
-                });
-            });
-        });
-    }
-
-    // نشر منشور
-    document.getElementById('publishBtn').addEventListener('click', async () => {
-        const text = document.getElementById('postText').value.trim();
-        if (!text) {
-            alert('اكتب شيئاً للنشر');
-            return;
-        }
-        try {
-            await addDoc(collection(db, 'posts'), {
-                userId: currentUser.uid,
-                text: text,
-                timestamp: serverTimestamp(),
-                likes: []
-            });
-            document.getElementById('postText').value = '';
-            alert('تم النشر!');
-        } catch (e) {
-            alert('خطأ: ' + e.message);
-        }
-    });
-
-    // تحميل المستخدمين المتصلين
-    async function loadOnlineUsers() {
-        const q = query(collection(db, 'users'), where('online', '==', true));
-        onSnapshot(q, (snapshot) => {
-            const onlineDiv = document.getElementById('onlineUsers');
-            onlineDiv.innerHTML = '';
-            snapshot.forEach((doc) => {
-                const user = doc.data();
-                if (user.uid !== currentUser?.uid) {
-                    const userDiv = document.createElement('div');
-                    userDiv.className = 'online-item';
-                    userDiv.innerHTML = `
-                        <img src="${user.avatar}" style="width: 40px; height: 40px; border-radius: 50%;">
-                        <div>
-                            <div>${user.fullName}</div>
-                            <small style="color:#8b5cf6">● متصل</small>
-                        </div>
-                    `;
-                    userDiv.onclick = () => openChat(user);
-                    onlineDiv.appendChild(userDiv);
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                emailInput.value = "";
+                passwordInput.value = "";
+            } catch (error) {
+                let errorMessage = "حدث خطأ في تسجيل الدخول";
+                switch (error.code) {
+                    case 'auth/user-not-found':
+                        errorMessage = "المستخدم غير موجود";
+                        break;
+                    case 'auth/wrong-password':
+                        errorMessage = "كلمة المرور غير صحيحة";
+                        break;
+                    case 'auth/invalid-email':
+                        errorMessage = "البريد الإلكتروني غير صالح";
+                        break;
+                    case 'auth/too-many-requests':
+                        errorMessage = "تم تعطيل الحساب مؤقتاً بسبب محاولات كثيرة";
+                        break;
+                    default:
+                        errorMessage = error.message;
                 }
-            });
+                alert(errorMessage);
+            }
         });
-    }
 
-    // فتح المحادثة
-    function openChat(user) {
-        currentChatUser = user;
-        const chatWindow = document.getElementById('chatWindow');
-        const chatUserName = document.getElementById('chatUserName');
-        chatUserName.innerText = user.fullName;
-        chatWindow.classList.remove('hidden');
-        
-        // تحميل الرسائل
-        const chatId = [currentUser.uid, user.uid].sort().join('_');
-        if (messagesUnsub) messagesUnsub();
-        const q = query(collection(db, 'chats', chatId, 'messages'), orderBy('timestamp', 'asc'));
-        messagesUnsub = onSnapshot(q, (snapshot) => {
-            const messagesDiv = document.getElementById('chatMessages');
-            messagesDiv.innerHTML = '';
-            snapshot.forEach((doc) => {
-                const msg = doc.data();
-                const msgDiv = document.createElement('div');
-                msgDiv.className = `message ${msg.senderId === currentUser.uid ? 'sent' : 'received'}`;
-                msgDiv.innerText = msg.text;
-                messagesDiv.appendChild(msgDiv);
-            });
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        // Login with Google
+        googleBtn.addEventListener("click", async () => {
+            const provider = new GoogleAuthProvider();
+            try {
+                await signInWithPopup(auth, provider);
+            } catch (error) {
+                let errorMessage = "حدث خطأ في تسجيل الدخول عبر Google";
+                if (error.code === 'auth/popup-blocked') {
+                    errorMessage = "الرجاء السماح للنوافذ المنبثقة في المتصفح";
+                } else if (error.code === 'auth/network-request-failed') {
+                    errorMessage = "خطأ في الشبكة، تحقق من اتصال الإنترنت";
+                }
+                alert(errorMessage);
+            }
         });
-    }
-    
-    // إرسال رسالة
-    document.getElementById('sendChatBtn').addEventListener('click', async () => {
-        if (!currentChatUser) return;
-        const input = document.getElementById('chatInput');
-        const text = input.value.trim();
-        if (!text) return;
-        const chatId = [currentUser.uid, currentChatUser.uid].sort().join('_');
-        await addDoc(collection(db, 'chats', chatId, 'messages'), {
-            senderId: currentUser.uid,
-            text: text,
-            timestamp: serverTimestamp()
+
+        // Logout
+        logoutBtn.addEventListener("click", async () => {
+            try {
+                await signOut(auth);
+            } catch (error) {
+                alert("حدث خطأ أثناء تسجيل الخروج");
+            }
         });
-        input.value = '';
-    });
-    
-    document.getElementById('closeChat').addEventListener('click', () => {
-        document.getElementById('chatWindow').classList.add('hidden');
-        if (messagesUnsub) messagesUnsub();
-        currentChatUser = null;
-    });
-    
-    // تسجيل الخروج
-    document.getElementById('logoutBtn').addEventListener('click', async () => {
-        if (currentUser) {
-            await updateDoc(doc(db, 'users', currentUser.uid), { online: false });
-        }
-        await signOut(auth);
-    });
-    
-    // قائمة الملف الشخصي
-    document.querySelector('.profile-menu').addEventListener('click', () => {
-        const dropdown = document.getElementById('dropdown');
-        dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
-    });
-    
-    document.addEventListener('click', (e) => {
-        if (!e.target.closest('.profile-menu')) {
-            document.getElementById('dropdown').style.display = 'none';
-        }
-    });
-    
-    console.log('✅ DZ Teach يعمل!');
-</script>
+
+        // Send message
+        sendBtn.addEventListener("click", async () => {
+            const text = messageInput.value.trim();
+            if (!text) return;
+            
+            if (!auth.currentUser) {
+                alert("الرجاء تسجيل الدخول أولاً");
+                return;
+            }
+            
+            try {
+                await addDoc(collection(db, "messages"), {
+                    uid: auth.currentUser.uid,
+                    name: auth.currentUser.email,
+                    text: text,
+                    timestamp: serverTimestamp()
+                });
+                messageInput.value = "";
+            } catch (error) {
+                console.error("Error sending message:", error);
+                alert("حدث خطأ في إرسال الرسالة");
+            }
+        });
+
+        // Send message on Enter key
+        messageInput.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") {
+                sendBtn.click();
+            }
+        });
+
+        // Auth state
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                loginDiv.classList.add("hidden");
+                chatDiv.classList.remove("hidden");
+                userEmailSpan.textContent = user.email;
+                loadMessages();
+            } else {
+                loginDiv.classList.remove("hidden");
+                chatDiv.classList.add("hidden");
+                messagesDiv.innerHTML = "";
+            }
+        });
+
+        console.log("✅ DZ Teach app initialized successfully!");
+    </script>
 </body>
 </html>

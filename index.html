@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>Hadra Chat</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Firebase -->
+  <script type="module" src="https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js"></script>
+  <script type="module" src="https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js"></script>
+  <script type="module" src="https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js"></script>
+</head>
+<body>
+  <div class="chat-container">
+    <div id="login-div">
+      <h2>تسجيل الدخول</h2>
+      <input type="email" id="email" placeholder="البريد الإلكتروني">
+      <input type="password" id="password" placeholder="كلمة المرور">
+      <button id="login-btn">تسجيل الدخول</button>
+      <button id="google-btn">تسجيل الدخول بواسطة Google</button>
+    </div>
+
+    <div id="chat-div" class="hidden">
+      <h2>الدردشة</h2>
+      <div id="messages"></div>
+      <input type="text" id="message-input" placeholder="اكتب رسالتك...">
+      <button id="send-btn">إرسال</button>
+      <button id="logout-btn">تسجيل الخروج</button>
+    </div>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

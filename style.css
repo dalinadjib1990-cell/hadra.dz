@@ -1,53 +1,324 @@
+/* ===========================
+   Windows 2000 / MS Classic UI
+   =========================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Tahoma&display=swap');
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 body {
-  font-family: Arial, sans-serif;
-  background: #f0f2f5;
+  font-family: 'Tahoma', 'MS Sans Serif', Arial, sans-serif;
+  font-size: 11px;
+  background-color: #008080; /* Classic Win2k teal desktop */
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      rgba(0,0,0,0.03) 0px,
+      rgba(0,0,0,0.03) 1px,
+      transparent 1px,
+      transparent 4px
+    );
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh;
   margin: 0;
-}
-
-.chat-container {
-  width: 400px;
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 0 20px rgba(0,0,0,0.1);
   padding: 20px;
 }
 
-.hidden { display: none; }
-
-#messages {
-  height: 300px;
-  overflow-y: auto;
-  border: 1px solid #ddd;
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 5px;
+/* ── Window chrome ── */
+.chat-container {
+  width: 340px;
+  background: #d4d0c8;
+  border-top: 2px solid #ffffff;
+  border-left: 2px solid #ffffff;
+  border-right: 2px solid #404040;
+  border-bottom: 2px solid #404040;
+  box-shadow: 1px 1px 0 #808080, -1px -1px 0 #dfdfdf;
 }
 
-#messages div {
-  margin-bottom: 10px;
+/* ── Title bar ── */
+.chat-container::before {
+  content: "Hadra Chat - تسجيل الدخول";
+  display: block;
+  background: linear-gradient(to right, #000080, #1084d0);
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 11px;
+  padding: 3px 6px;
+  letter-spacing: 0.3px;
+  user-select: none;
 }
 
-#messages .user { font-weight: bold; }
-
-input, button {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
+/* ── Window title bar buttons (decorative) ── */
+.win-titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(to right, #000080, #1084d0);
+  padding: 2px 4px;
+  user-select: none;
 }
 
-button {
+.win-titlebar .win-title {
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.win-titlebar .win-title img {
+  width: 14px;
+  height: 14px;
+}
+
+.win-titlebar .win-controls {
+  display: flex;
+  gap: 2px;
+}
+
+.win-btn {
+  width: 16px;
+  height: 14px;
+  background: #d4d0c8;
+  border-top: 1px solid #ffffff;
+  border-left: 1px solid #ffffff;
+  border-right: 1px solid #404040;
+  border-bottom: 1px solid #404040;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
   cursor: pointer;
-  background: #007bff;
-  color: white;
-  border: none;
+  color: #000;
+  font-family: 'Tahoma', sans-serif;
+  line-height: 1;
+}
+
+.win-btn:active {
+  border-top: 1px solid #404040;
+  border-left: 1px solid #404040;
+  border-right: 1px solid #ffffff;
+  border-bottom: 1px solid #ffffff;
+}
+
+/* ── Content area ── */
+.win-content {
+  padding: 12px 10px 10px 10px;
+  background: #d4d0c8;
+}
+
+/* ── Inset panel (sunken box) ── */
+.win-inset {
+  border-top: 1px solid #808080;
+  border-left: 1px solid #808080;
+  border-right: 1px solid #ffffff;
+  border-bottom: 1px solid #ffffff;
+  background: #d4d0c8;
+  padding: 8px;
+  margin-bottom: 8px;
+}
+
+/* ── Section headings ── */
+.win-content h2 {
+  font-size: 11px;
+  font-weight: bold;
+  margin: 0 0 8px 0;
+  color: #000000;
+}
+
+/* ── Labels ── */
+label {
+  display: block;
+  font-size: 11px;
+  color: #000;
+  margin-bottom: 2px;
+  direction: rtl;
+}
+
+/* ── Inputs ── */
+input[type="email"],
+input[type="password"],
+input[type="text"] {
+  width: 100%;
+  padding: 2px 3px;
+  font-family: 'Tahoma', 'MS Sans Serif', sans-serif;
+  font-size: 11px;
+  background: #ffffff;
+  color: #000000;
+  border-top: 1px solid #808080;
+  border-left: 1px solid #808080;
+  border-right: 1px solid #dfdfdf;
+  border-bottom: 1px solid #dfdfdf;
+  border-radius: 0;
+  outline: none;
+  margin-bottom: 6px;
+  box-shadow: inset 1px 1px 0 #404040;
+  direction: rtl;
+}
+
+input:focus {
+  outline: 1px dotted #000;
+  outline-offset: -2px;
+}
+
+/* ── Buttons ── */
+button {
+  font-family: 'Tahoma', 'MS Sans Serif', sans-serif;
+  font-size: 11px;
+  min-width: 75px;
+  padding: 3px 10px;
+  background: #d4d0c8;
+  color: #000000;
+  border-top: 2px solid #ffffff;
+  border-left: 2px solid #ffffff;
+  border-right: 2px solid #404040;
+  border-bottom: 2px solid #404040;
+  cursor: pointer;
+  display: block;
+  width: 100%;
+  margin-bottom: 6px;
+  text-align: center;
+  position: relative;
+  direction: rtl;
 }
 
 button:hover {
-  background: #0056b3;
+  background: #e4e0d8;
+}
+
+button:active {
+  border-top: 2px solid #404040;
+  border-left: 2px solid #404040;
+  border-right: 2px solid #ffffff;
+  border-bottom: 2px solid #ffffff;
+  padding: 4px 9px 2px 11px;
+}
+
+button:focus {
+  outline: 1px dotted #000;
+  outline-offset: -4px;
+}
+
+/* Google button variant */
+#google-btn {
+  background: #d4d0c8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+#google-btn::before {
+  content: "G";
+  font-weight: bold;
+  font-size: 13px;
+  color: #cc3333;
+  line-height: 1;
+}
+
+/* ── Divider ── */
+.win-divider {
+  border: none;
+  border-top: 1px solid #808080;
+  border-bottom: 1px solid #ffffff;
+  margin: 8px 0;
+}
+
+/* ── Messages area ── */
+#messages {
+  height: 200px;
+  overflow-y: auto;
+  background: #ffffff;
+  border-top: 1px solid #808080;
+  border-left: 1px solid #808080;
+  border-right: 1px solid #dfdfdf;
+  border-bottom: 1px solid #dfdfdf;
+  box-shadow: inset 1px 1px 0 #404040;
+  padding: 4px 6px;
+  margin-bottom: 6px;
+  direction: rtl;
+  font-size: 11px;
+}
+
+#messages div {
+  margin-bottom: 5px;
+  padding-bottom: 4px;
+  border-bottom: 1px dotted #e0e0e0;
+  line-height: 1.4;
+}
+
+#messages .user {
+  font-weight: bold;
+  color: #000080;
+}
+
+/* ── Scrollbars (Win2k style) ── */
+#messages::-webkit-scrollbar {
+  width: 16px;
+}
+
+#messages::-webkit-scrollbar-track {
+  background: #d4d0c8;
+  border: 1px solid #808080;
+}
+
+#messages::-webkit-scrollbar-thumb {
+  background: #d4d0c8;
+  border-top: 1px solid #ffffff;
+  border-left: 1px solid #ffffff;
+  border-right: 1px solid #404040;
+  border-bottom: 1px solid #404040;
+}
+
+#messages::-webkit-scrollbar-button {
+  background: #d4d0c8;
+  height: 16px;
+  border-top: 1px solid #ffffff;
+  border-left: 1px solid #ffffff;
+  border-right: 1px solid #404040;
+  border-bottom: 1px solid #404040;
+}
+
+/* ── Status bar ── */
+.win-statusbar {
+  background: #d4d0c8;
+  border-top: 1px solid #808080;
+  padding: 2px 6px;
+  font-size: 10px;
+  color: #444;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.win-statusbar::before {
+  content: "🟢";
+  font-size: 8px;
+}
+
+/* ── Hidden utility ── */
+.hidden { display: none !important; }
+
+/* ── Send row layout ── */
+.send-row {
+  display: flex;
+  gap: 4px;
+  align-items: flex-start;
+}
+
+.send-row input {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.send-row button {
+  width: auto;
+  min-width: 60px;
+  margin-bottom: 0;
+  flex-shrink: 0;
 }

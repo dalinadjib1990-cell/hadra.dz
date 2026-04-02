@@ -5,6 +5,7 @@
 <title>Teach DZ</title>
 <link rel="stylesheet" href="style.css">
 
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
@@ -14,44 +15,55 @@
 
 <body>
 
-<div class="header">Teach DZ</div>
-
-<div class="container">
-
-<!-- AUTH -->
-<div class="card">
-<input id="email" placeholder="Email">
-<input id="password" type="password" placeholder="Password">
-<button onclick="register()">تسجيل</button>
-<button onclick="login()">دخول</button>
+<div class="header">
+  <h2>Teach DZ</h2>
 </div>
 
-<!-- PROFILE -->
-<div class="card">
-<input id="name" placeholder="اسمك">
-<input type="file" id="profilePic">
-<button onclick="saveProfile()">حفظ البروفايل</button>
+<div class="layout">
+
+<!-- LEFT -->
+<div class="sidebar">
+  <h3>👤 حساب</h3>
+  <input id="email" placeholder="Email">
+  <input id="password" type="password">
+  <button onclick="register()">تسجيل</button>
+  <button onclick="login()">دخول</button>
+
+  <hr>
+
+  <h3>👥 الأساتذة</h3>
+  <div id="users"></div>
+
+  <hr>
+
+  <h3>🔔 إشعارات</h3>
+  <div id="notif"></div>
 </div>
 
-<!-- POST -->
+<!-- CENTER -->
+<div class="feed">
+
 <div class="card">
-<input id="postText" placeholder="اكتب منشور">
-<input type="file" id="postImage">
-<button onclick="addPost()">نشر</button>
+  <h3>📝 منشور جديد</h3>
+  <input id="postText">
+  <input type="file" id="postImage">
+  <button onclick="addPost()">نشر</button>
 </div>
 
 <div id="posts"></div>
 
-<!-- CHAT -->
-<div class="chat">
-<div id="chatBox"></div>
-<input id="chatInput" placeholder="اكتب رسالة">
-<button onclick="sendMsg()">إرسال</button>
+</div>
+
+<!-- RIGHT -->
+<div class="chatPanel">
+  <h3 id="chatTitle">💬 Messenger</h3>
+  <div id="chatBox"></div>
+  <input id="chatInput">
+  <button onclick="sendPrivate()">إرسال</button>
 </div>
 
 </div>
 
 <script src="app.js"></script>
-
 </body>
 </html>
